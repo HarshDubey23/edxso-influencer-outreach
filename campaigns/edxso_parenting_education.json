@@ -48,7 +48,7 @@
     "min_engagement_rate": 1.5,
     "min_videos_sampled": 3,
     "max_days_since_upload": 120,
-    "min_relevance": 4,
+    "min_relevance": 6,
     "exclude_made_for_kids": true,
     "preferred_countries": ["IN"],
     "brand_safety_blocklist": [

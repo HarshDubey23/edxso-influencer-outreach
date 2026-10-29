@@ -14,7 +14,7 @@ def available() -> bool:
 
 
 def generate_json(system: str, prompt: str, schema: dict, temperature: float = 0.8) -> dict:
-    model = env("GEMINI_MODEL", "gemini-2.5-flash")
+    model = env("GEMINI_MODEL", "gemini-3.5-flash-lite")
     rpm = float(env("GEMINI_RPM", "8"))  # free tier is rate limited; throttle live calls only
     body = {
         "systemInstruction": {"parts": [{"text": system}]},

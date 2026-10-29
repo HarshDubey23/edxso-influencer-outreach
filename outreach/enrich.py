@@ -20,7 +20,9 @@ NOT_PUBLIC = "Not Available (private YouTube Analytics data)"
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 VALID_EMAIL = re.compile(r"^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$")
 URL_RE = re.compile(r"https?://[^\s<>\"')\]]+")
-CONTACT_LINE = re.compile(r"business|enquir|inquir|collab|contact|sponsor|e-?mail|mail us|reach (me|us)|promotion", re.I)
+# Video descriptions often quote *other* people's emails (exam boards, sponsors), so only business-intent lines count.
+CONTACT_LINE = re.compile(r"business|collab|sponsor|promotion|brand (deal|enquir|inquir)|work with me|for enquiries", re.I)
+INSTITUTIONAL = re.compile(r"\.(ac|edu|gov|nic|mil)(\.[a-z]{2})?$")
 SOCIAL = {
     "instagram": re.compile(r"instagram\.com/([A-Za-z0-9._]+)", re.I),
     "tiktok": re.compile(r"tiktok\.com/@([A-Za-z0-9._]+)", re.I),
@@ -87,7 +89,7 @@ def find_contact(rec: dict) -> dict:
     if email == NOT_FOUND:
         for v in rec["recent_videos"]:
             lines = [ln for ln in v["description"].splitlines() if CONTACT_LINE.search(ln)]
-            if found := extract_emails("\n".join(lines)):
+            if found := [e for e in extract_emails("\n".join(lines)) if not INSTITUTIONAL.search(e)]:
                 email, source = found[0], f"business line in video description ({v['url']})"
                 break
     for v in rec["recent_videos"][:5]:  # socials often only appear in video descriptions

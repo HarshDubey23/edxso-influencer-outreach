@@ -1,6 +1,8 @@
 """Run: python -m unittest discover -s tests -v   (no network, no API keys needed)"""
+import os
 import tempfile
 import unittest
+from unittest import mock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -75,6 +77,12 @@ class Classification(unittest.TestCase):
                 self.assertIn(r["checks"][rule]["detail"], r["reasons"])
                 self.assertEqual(r["fit_score"], 0)
 
+    def test_niche_not_judged_without_video_titles(self):
+        r = classify.classify(record(followers=900000, videos=[]), CAMPAIGN)
+        self.assertNotIn("niche_relevance", r["checks"])
+        self.assertEqual(len(r["reasons"]), 1)
+        self.assertIn("followers", r["reasons"][0])
+
     def test_hidden_subscribers_rejected(self):
         r = classify.classify(record(followers=None), CAMPAIGN)
         self.assertEqual(r["reasons"][0], "subscriber count is hidden")
@@ -89,6 +97,14 @@ class Enrichment(unittest.TestCase):
         self.assertEqual(extract_emails("Contact me on Instagram"), [])
         self.assertEqual(NOT_FOUND, "Not Found")
 
+    def test_video_description_ignores_third_party_emails(self):
+        from outreach.enrich import find_contact
+        rec = record()
+        rec["recent_videos"][0]["description"] = "📧 Email: eligibilitysection@tnteu.ac.in\nContact the board office"
+        self.assertEqual(find_contact(rec)["email"], NOT_FOUND)
+        rec["recent_videos"][1]["description"] = "For business/collab: priya.collabs@gmail.com"
+        self.assertEqual(find_contact(rec)["email"], "priya.collabs@gmail.com")
+
     def test_links(self):
         socials, sites = find_links("IG https://instagram.com/priya.teaches site https://priyateaches.in/ "
                                     "buy https://amzn.to/x https://www.netflix.com/title")
@@ -100,7 +116,7 @@ class MessageValidation(unittest.TestCase):
     rec = {**record(), "content_themes": ["classroom management", "lesson planning"],
            "standout_video_title": "Classroom management tips for new teachers"}
 
-    def msg(self, body_words=70, dm="Loved your classroom management tips video! Would you be open to an EDXSO teacher ambassador collab this term?"):
+    def msg(self, body_words=70, dm="Priya, your classroom management tips video was spot on! Would you be open to an EDXSO teacher ambassador collab this term?"):
         body = "Hi Priya, your classroom management tips for new teachers were practical. " + "word " * (body_words - 10)
         return {"greeting_name": "Priya", "collaboration_angle": "Brand ambassador program",
                 "personalization_signals": [], "email_subject": "s", "email_body": body.strip(), "instagram_dm": dm}
@@ -117,6 +133,23 @@ class MessageValidation(unittest.TestCase):
         self.assertTrue(personalize.validate({**self.msg(), "instagram_dm": "Hi [Name], loved your classroom tips! " * 3},
                                              self.rec, CAMPAIGN))
 
+    def test_generic_dm_opener_rejected(self):
+        dm = "Loved your classroom management tips video! Would you be open to an EDXSO teacher ambassador collab this term?"
+        self.assertTrue(any("opens generically" in p for p in personalize.validate(self.msg(dm=dm), self.rec, CAMPAIGN)))
+
+    def test_greeting_must_come_from_channel_name(self):
+        m = self.msg()
+        m["greeting_name"] = "there"
+        m["email_body"] = m["email_body"].replace("Hi Priya", "Hi there")
+        self.assertTrue(any("greet the creator" in p for p in personalize.validate(m, self.rec, CAMPAIGN)))
+
+    def test_number_check_ignores_words_starting_with_k(self):
+        m = self.msg()
+        m["email_body"] += " Your 5 kindergarten ideas"
+        self.assertFalse(any("follower counts" in p for p in personalize.validate(m, self.rec, CAMPAIGN)))
+        m["email_body"] += " and 10k subscribers"
+        self.assertTrue(any("follower counts" in p for p in personalize.validate(m, self.rec, CAMPAIGN)))
+
 
 class Sending(unittest.TestCase):
     def setUp(self):
@@ -132,20 +165,40 @@ class Sending(unittest.TestCase):
         self.db.close()
         self.tmp.cleanup()
 
+    def send(self, **kw):
+        return sender.run(CAMPAIGN, self.msgs, [], db=self.db, outbox=Path(self.tmp.name) / "outbox", **kw)
+
     def test_dry_run_selects_valid_and_prevents_duplicates(self):
-        s1 = sender.run(CAMPAIGN, self.msgs, [], db=self.db)
+        s1 = self.send()
         self.assertEqual((s1["sent"], s1["ineligible"], s1["duplicates_skipped"]), (1, 2, 1))
-        s2 = sender.run(CAMPAIGN, self.msgs, [], db=self.db)
+        self.assertTrue((Path(self.tmp.name) / "outbox" / "UC1.eml").exists())
+        s2 = self.send()
         self.assertEqual((s2["sent"], s2["duplicates_skipped"], s2["dms_queued"]), (0, 2, 0))
         rows = self.db.execute("SELECT status FROM outreach_log WHERE kind='email'").fetchall()
         self.assertEqual([r["status"] for r in rows], ["simulated"])
 
     def test_live_requires_confirmation(self):
         with self.assertRaises(SystemExit):
-            sender.run(CAMPAIGN, self.msgs, [], mode="live", db=self.db)
+            self.send(mode="live")
+
+    def test_n8n_no_reply_is_unconfirmed_and_never_resent(self):
+        calls = []
+
+        def lost_reply(items):
+            calls.append(items)
+            raise OSError("timed out")
+
+        os.environ["TEST_RECIPIENT"] = "me@x.com"
+        with mock.patch.object(sender, "send_n8n", lost_reply):
+            s1 = self.send(mode="test", transport="n8n")
+            s2 = self.send(mode="test", transport="n8n")
+        self.assertEqual(len(calls), 1)  # second run did not re-send the batch
+        self.assertEqual((s1["failed"], s2["duplicates_skipped"]), (1, 2))  # A, and C (same inbox as A)
+        row = self.db.execute("SELECT status, delivered_to FROM outreach_log WHERE kind='email'").fetchone()
+        self.assertEqual(tuple(row), ("unconfirmed", "me@x.com"))
 
     def test_manual_dm_flow(self):
-        sender.run(CAMPAIGN, self.msgs, [], db=self.db)
+        self.send()
         self.assertTrue(sender.mark_dm_sent(CAMPAIGN, "UC1", db=self.db))
         self.assertFalse(sender.mark_dm_sent(CAMPAIGN, "UC1", db=self.db))
 

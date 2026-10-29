@@ -81,7 +81,6 @@ def recent_videos(uploads_playlist: str, n: int) -> list[dict]:
             "title": it["snippet"]["title"],
             "published_at": it["snippet"]["publishedAt"],
             "description": it["snippet"].get("description", "")[:2000],
-            "tags": it["snippet"].get("tags", [])[:15],
             "views": int(st["viewCount"]) if "viewCount" in st else None,
             "likes": int(st["likeCount"]) if "likeCount" in st else None,  # None = creator hid likes
             "comments": int(st["commentCount"]) if "commentCount" in st else None,
@@ -122,10 +121,8 @@ def build_record(ch: dict, videos: list[dict], queries: set[str]) -> dict:
         "handle": handle,
         "profile_url": f"https://www.youtube.com/{handle}" if handle else f"https://www.youtube.com/channel/{ch['id']}",
         "followers": followers,
-        "total_views": int(st.get("viewCount", 0)),
         "video_count": int(st.get("videoCount", 0)),
         "country": sn.get("country") or branding.get("country"),
-        "channel_created": sn.get("publishedAt", "")[:10],
         "description": sn.get("description", ""),
         "channel_keywords": branding.get("keywords", ""),
         "topics": [u.rsplit("/", 1)[-1].replace("_", " ") for u in ch.get("topicDetails", {}).get("topicCategories", [])],

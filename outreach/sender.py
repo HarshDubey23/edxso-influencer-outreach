@@ -20,14 +20,13 @@ from .config import DATA, OUTPUT, env
 from .enrich import NOT_FOUND, VALID_EMAIL
 from .http import HttpError, request_json
 
-SUCCESS = ("simulated", "test_sent", "sent", "dm_queued_manual", "dm_sent_manual")
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS outreach_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   campaign_id TEXT NOT NULL, channel_id TEXT NOT NULL, influencer TEXT, email TEXT,
   kind TEXT NOT NULL,          -- 'email' | 'instagram_dm'
   mode TEXT NOT NULL,          -- 'dry-run' | 'test' | 'live' | 'manual'
-  status TEXT NOT NULL,        -- simulated | test_sent | sent | failed | dm_queued_manual | dm_sent_manual
+  status TEXT NOT NULL,        -- sending | simulated | test_sent | sent | failed | unconfirmed | dm_queued_manual | dm_sent_manual
   subject TEXT, delivered_to TEXT, transport TEXT, provider_id TEXT, error TEXT,
   created_at TEXT NOT NULL
 );
@@ -56,10 +55,16 @@ def already_contacted(db, campaign_id, kind, mode, channel_id, email) -> bool:
         (campaign_id, kind, mode, channel_id, email)).fetchone() is not None
 
 
-def log(db, **row) -> None:
+def log(db, **row) -> int:
     row.setdefault("created_at", now())
     cols = ", ".join(row)
-    db.execute(f"INSERT INTO outreach_log ({cols}) VALUES ({', '.join('?' * len(row))})", tuple(row.values()))
+    cur = db.execute(f"INSERT INTO outreach_log ({cols}) VALUES ({', '.join('?' * len(row))})", tuple(row.values()))
+    db.commit()
+    return cur.lastrowid
+
+
+def update(db, rowid: int, **fields) -> None:
+    db.execute(f"UPDATE outreach_log SET {', '.join(f'{k}=?' for k in fields)} WHERE id=?", (*fields.values(), rowid))
     db.commit()
 
 
@@ -82,7 +87,8 @@ def send_smtp(m: EmailMessage) -> str:
 
 
 def send_n8n(items: list[dict]) -> dict[str, dict]:
-    r = request_json(env("N8N_WEBHOOK_URL", required=True), body={"items": items}, cache=False, retries=2,
+    # retries=1: sending is not idempotent, a retry after a lost reply would email everyone twice
+    r = request_json(env("N8N_WEBHOOK_URL", required=True), body={"items": items}, cache=False, retries=1,
                      headers={"X-Outreach-Token": env("N8N_WEBHOOK_TOKEN", "")})
     return {x["channel_id"]: x for x in r.get("results", [])}
 
@@ -102,7 +108,7 @@ def eligible(messages: list[dict]) -> tuple[list[dict], list[tuple[dict, str]]]:
 
 
 def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-run", transport="smtp",
-        limit=None, confirm_live=False, db=None) -> dict:
+        limit=None, confirm_live=False, db=None, outbox=None) -> dict:
     if mode == "live" and not confirm_live:
         raise SystemExit("Refusing to email real creators without --confirm-live.")
     test_to = env("TEST_RECIPIENT") if mode == "test" else None
@@ -126,41 +132,48 @@ def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-ru
             batch_emails.add(m["email"])
     todo = todo[:limit] if limit else todo
 
-    outbox = OUTPUT / "outbox"
+    outbox = outbox or OUTPUT / "outbox"
     outbox.mkdir(parents=True, exist_ok=True)
+    done = "simulated" if mode == "dry-run" else "test_sent" if mode == "test" else "sent"
+    emails, rowids = {}, {}
+    # Write-ahead: a 'sending' row exists before anything leaves the machine. If the process dies mid-send,
+    # that row (status != 'failed') blocks a resend on the next run instead of silently emailing twice.
+    for m in todo:
+        to = test_to or m["email"]
+        emails[m["channel_id"]] = em = build_email(m, to, m["email"], mode)
+        rowids[m["channel_id"]] = log(db, campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"],
+                                      email=m["email"], kind="email", mode=mode, status="sending",
+                                      subject=em["Subject"], delivered_to=to,
+                                      transport="none" if mode == "dry-run" else transport)
+
     n8n_results = {}
     if mode != "dry-run" and transport == "n8n" and todo:
-        items = [{"channel_id": m["channel_id"], "to": test_to or m["email"], "original_to": m["email"],
-                  "subject": build_email(m, test_to or m["email"], m["email"], mode)["Subject"],
-                  "body": m["email_body"]} for m in todo]
+        items = [{"channel_id": m["channel_id"], "to": emails[m["channel_id"]]["To"], "original_to": m["email"],
+                  "subject": emails[m["channel_id"]]["Subject"], "body": m["email_body"]} for m in todo]
         try:
             n8n_results = send_n8n(items)
         except (HttpError, OSError) as e:
-            n8n_results = {m["channel_id"]: {"status": "failed", "error": f"n8n unreachable: {e}"} for m in todo}
+            # No answer: n8n may or may not have sent. 'unconfirmed' blocks a blind resend; check Gmail Sent.
+            n8n_results = {m["channel_id"]: {"status": "unconfirmed", "error": f"no reply from n8n: {e}"} for m in todo}
 
     for m in todo:
-        to = test_to or m["email"]
-        em = build_email(m, to, m["email"], mode)
-        row = dict(campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"], email=m["email"],
-                   kind="email", mode=mode, subject=em["Subject"], delivered_to=to,
-                   transport="none" if mode == "dry-run" else transport)
+        em, fields = emails[m["channel_id"]], {}
         try:
             if mode == "dry-run":
                 (outbox / f"{m['channel_id']}.eml").write_bytes(bytes(em))
-                row.update(status="simulated", provider_id=em["Message-ID"])
+                fields = dict(status=done, provider_id=em["Message-ID"])
             elif transport == "n8n":
-                res = n8n_results.get(m["channel_id"], {"status": "failed", "error": "no result from n8n"})
-                if res.get("status") != "sent":
-                    raise RuntimeError(res.get("error", "n8n reported failure"))
-                row.update(status="test_sent" if mode == "test" else "sent", provider_id=res.get("provider_id"))
+                res = n8n_results.get(m["channel_id"], {"status": "failed", "error": "n8n returned no result for this email"})
+                fields = (dict(status=done, provider_id=res.get("provider_id")) if res.get("status") == "sent"
+                          else dict(status=res.get("status") if res.get("status") == "unconfirmed" else "failed",
+                                    error=str(res.get("error", "n8n reported failure"))[:500]))
             else:
-                row.update(status="test_sent" if mode == "test" else "sent", provider_id=send_smtp(em))
-            stats["sent"] += 1
+                fields = dict(status=done, provider_id=send_smtp(em))
         except Exception as e:  # one bad send must not abort the batch; it is logged and retryable
-            row.update(status="failed", error=str(e)[:500])
-            stats["failed"] += 1
-        log(db, **row)
-        print(f"  {row['status']:<10} {m['influencer']} -> {to}")
+            fields = dict(status="failed", error=str(e)[:500])
+        stats["sent" if fields["status"] == done else "failed"] += 1
+        update(db, rowids[m["channel_id"]], **fields)
+        print(f"  {fields['status']:<11} {m['influencer']} -> {em['To']}")
 
     # Instagram DMs: manual workflow only (queue once per creator).
     by_id = {r["channel_id"]: r for r in enriched}

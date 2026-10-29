@@ -1,0 +1,55 @@
+{
+  "name": "EDXSO Outreach Sender",
+  "nodes": [
+    {
+      "parameters": {"httpMethod": "POST", "path": "edxso-outreach", "responseMode": "responseNode",
+        "options": {"onlyRunIf": "={{ $json.headers['x-outreach-token'] === 'REPLACE_WITH_N8N_WEBHOOK_TOKEN' }}"}},
+      "id": "a1", "name": "Outreach batch (webhook)", "type": "n8n-nodes-base.webhook", "typeVersion": 2,
+      "position": [0, 0], "webhookId": "edxso-outreach"
+    },
+    {
+      "parameters": {"fieldToSplitOut": "body.items", "options": {}},
+      "id": "a2", "name": "One item per email", "type": "n8n-nodes-base.splitOut", "typeVersion": 1, "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {"appendAttribution": false}
+      },
+      "id": "a3", "name": "Send via Gmail", "type": "n8n-nodes-base.gmail", "typeVersion": 2.1, "position": [440, 0],
+      "onError": "continueRegularOutput",
+      "credentials": {"gmailOAuth2": {"id": "", "name": "Gmail - EDXSO outreach"}}
+    },
+    {
+      "parameters": {
+        "assignments": {"assignments": [
+          {"id": "s1", "name": "channel_id", "type": "string", "value": "={{ $('One item per email').item.json.channel_id }}"},
+          {"id": "s2", "name": "status", "type": "string", "value": "={{ $json.error ? 'failed' : 'sent' }}"},
+          {"id": "s3", "name": "provider_id", "type": "string", "value": "={{ $json.id || '' }}"},
+          {"id": "s4", "name": "error", "type": "string", "value": "={{ $json.error ? ($json.error.message || String($json.error)) : '' }}"}
+        ]},
+        "options": {}
+      },
+      "id": "a4", "name": "Delivery result", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [660, 0]
+    },
+    {
+      "parameters": {"aggregate": "aggregateAllItemData", "destinationFieldName": "results", "options": {}},
+      "id": "a5", "name": "Collect results", "type": "n8n-nodes-base.aggregate", "typeVersion": 1, "position": [880, 0]
+    },
+    {
+      "parameters": {"respondWith": "json", "responseBody": "={{ { results: $json.results } }}", "options": {}},
+      "id": "a6", "name": "Return statuses", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1100, 0]
+    }
+  ],
+  "connections": {
+    "Outreach batch (webhook)": {"main": [[{"node": "One item per email", "type": "main", "index": 0}]]},
+    "One item per email": {"main": [[{"node": "Send via Gmail", "type": "main", "index": 0}]]},
+    "Send via Gmail": {"main": [[{"node": "Delivery result", "type": "main", "index": 0}]]},
+    "Delivery result": {"main": [[{"node": "Collect results", "type": "main", "index": 0}]]},
+    "Collect results": {"main": [[{"node": "Return statuses", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"}
+}

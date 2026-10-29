@@ -99,7 +99,10 @@ def get_text(url: str, timeout: int = 12, max_bytes: int = 600_000) -> str | Non
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 if "html" in r.headers.get("Content-Type", "") or "text" in r.headers.get("Content-Type", ""):
                     text = r.read(max_bytes).decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            if e.code >= 500 or e.code == 429:
+                return None  # transient: don't cache, try again next run
         except Exception:
-            text = None
+            return None  # timeout / DNS / connection reset: transient, not cached
     path.write_text(json.dumps({"url": url, "text": text}), encoding="utf-8")
     return text

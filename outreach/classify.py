@@ -56,8 +56,10 @@ def classify(rec: dict, campaign: dict) -> dict:
     weighted = {k: v * segments[k]["fit_weight"] for k, v in scores.items()}
     seg = max(weighted, key=weighted.get)
     rel = scores[seg]
-    check("niche_relevance", rel >= f["min_relevance"],
-          f"relevance {rel:g} for '{segments[seg]['label']}' (min {f['min_relevance']})")
+    # Videos are only fetched near the follower range; judging niche without titles would mislabel the reason.
+    if rec["recent_videos"]:
+        check("niche_relevance", rel >= f["min_relevance"],
+              f"relevance {rel:g} for '{segments[seg]['label']}' (min {f['min_relevance']})")
 
     if f.get("exclude_made_for_kids"):
         check("audience_not_children", not rec["made_for_kids"],
@@ -87,7 +89,6 @@ def classify(rec: dict, campaign: dict) -> dict:
             "segment": seg,
             "segment_label": segments[seg]["label"],
             "relevance_score": rel,
-            "segment_scores": scores,
             "geo_preferred": geo_pref,
             "fit_score": round(fit, 1),
             "checks": checks,
