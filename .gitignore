@@ -3,3 +3,5 @@ __pycache__/
 data/cache/
 data/outreach.db
 output/outbox/
+.impeccable/review/
+.impeccable/mocks/

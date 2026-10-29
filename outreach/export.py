@@ -128,7 +128,7 @@ def build_site() -> None:
     site = ROOT / "site"
     shutil.rmtree(site, ignore_errors=True)
     site.mkdir()
-    for f in ("index.html", "app.js", "model.js", "style.css"):
+    for f in ("index.html", "landing.css", "landing.js", "app.html", "app.js", "model.js", "style.css"):
         shutil.copy(ROOT / "dashboard" / f, site / f)
     shutil.copy(ROOT / "models" / "niche_classifier_web.json", site / "niche_classifier_web.json")
     d = dashboard_data()

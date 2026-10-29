@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creator Outreach Engine</title>
+  <meta name="description" content="AI-powered micro-influencer discovery, ML classification, enrichment, personalised outreach and tracking across 8 niches, built on real YouTube data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231d3a31'/%3E%3Cpath d='M9 21l5-6 4 3 5-7' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brandmark" href="index.html">Outreach Engine<small>result sheet</small></a>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+        <button role="tab" data-tab="creators">Creators</button>
+        <button role="tab" data-tab="messages">Messages</button>
+        <button role="tab" data-tab="match">Brand match</button>
+        <button role="tab" data-tab="ask">Ask the data</button>
+        <button role="tab" data-tab="model">Classifier</button>
+        <button role="tab" data-tab="replies">Replies</button>
+        <button role="tab" data-tab="tracker">Tracker</button>
+      </nav>
+      <span class="mode" id="mode">loading…</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="overview"></section>
+    <section id="creators" hidden></section>
+    <section id="messages" hidden></section>
+    <section id="match" hidden></section>
+    <section id="ask" hidden></section>
+    <section id="model" hidden></section>
+    <section id="replies" hidden></section>
+    <section id="tracker" hidden></section>
+  </main>
+
+  <dialog id="detail" aria-label="Creator detail"><div class="dlg" id="detail-body"></div></dialog>
+
+  <footer class="wrap">
+    All creator data is real and public (YouTube Data API);
+    nothing is estimated or invented, and unavailable fields are marked. Brands other than EDXSO are fictional demo briefs.
+    No real creator was emailed: test sends went only to the operator's own inbox. <span id="generated"></span>
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

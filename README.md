@@ -7,7 +7,7 @@ plain-English **brand brief** using embeddings, writes a personalised email and 
 doubtful for **human review**, sends through **n8n + Gmail** with crash-safe duplicate protection, **triages replies**, and
 schedules **follow-ups**.
 
-**Live demo:** https://edxso-outreach-engine.vercel.app (read-only public dashboard; emails masked; the niche classifier runs in your browser)
+**Live demo:** https://edxso-outreach-engine.vercel.app: the results page (merit list, how each result was decided, a live classifier you can type into). The full dashboard is at [/app.html](https://edxso-outreach-engine.vercel.app/app.html). Both are read-only with emails masked.
 **Run it locally:** `uvicorn outreach.api:app` → http://localhost:8000 (full interactive mode)
 
 ![Overview](docs/screenshots/overview.png)

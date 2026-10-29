@@ -3,50 +3,173 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Creator Outreach Engine</title>
-  <meta name="description" content="AI-powered micro-influencer discovery, ML classification, enrichment, personalised outreach and tracking across 8 niches, built on real YouTube data.">
+  <title>Results Declared · Creator Outreach Engine</title>
+  <meta name="description" content="161 of 2,629 real YouTube creators cleared: an AI-powered micro-influencer discovery, classification, enrichment and outreach engine, with every decision explained.">
+  <meta name="theme-color" content="#1d3a31">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f5f4a'/%3E%3Cpath d='M9 21l5-6 4 3 5-7' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d3a31'/%3E%3Crect x='7' y='6' width='18' height='21' fill='%23f6f7f4'/%3E%3Ccircle cx='16' cy='7' r='3' fill='%23c9a14e'/%3E%3Cpath d='M10 20h12' stroke='%23c62f26' stroke-width='2.5'/%3E%3C/svg%3E">
 </head>
 <body>
-  <header class="top">
-    <div class="wrap">
-      <div class="brandmark">Outreach Engine<small>for EDXSO</small></div>
-      <nav class="tabs" role="tablist" aria-label="Sections">
-        <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
-        <button role="tab" data-tab="creators">Creators</button>
-        <button role="tab" data-tab="messages">Messages</button>
-        <button role="tab" data-tab="match">Brand match</button>
-        <button role="tab" data-tab="ask">Ask the data</button>
-        <button role="tab" data-tab="model">Classifier</button>
-        <button role="tab" data-tab="replies">Replies</button>
-        <button role="tab" data-tab="tracker">Tracker</button>
-      </nav>
-      <span class="mode" id="mode">loading…</span>
-    </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="brass" cx="35%" cy="30%" r="70%">
+        <stop offset="0" stop-color="#f3dc9a"/><stop offset=".45" stop-color="#c9a14e"/><stop offset="1" stop-color="#6e5420"/>
+      </radialGradient>
+      <symbol id="pin" viewBox="0 0 24 24"><ellipse cx="13" cy="15" rx="7" ry="3" fill="rgba(0,0,0,.28)"/><circle cx="12" cy="11" r="8" fill="url(#brass)"/><circle cx="9.5" cy="8.5" r="2.2" fill="#fff6d6" opacity=".7"/></symbol>
+      <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/></symbol>
+      <symbol id="ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4 11 13M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="rail">
+    <a class="rail-mark" href="#top">Creator Outreach Engine</a>
+    <nav aria-label="Sections">
+      <a href="#decided">How it was decided</a>
+      <a href="#withheld">Withheld</a>
+      <a href="#examiner">Try the examiner</a>
+      <a href="#letters">Letters</a>
+      <a href="#safeguards">Safeguards</a>
+    </nav>
+    <a class="rail-cta" href="app.html"><span class="long">Live </span>dashboard <svg><use href="#arrow"/></svg></a>
   </header>
 
-  <main class="wrap">
-    <section id="overview"></section>
-    <section id="creators" hidden></section>
-    <section id="messages" hidden></section>
-    <section id="match" hidden></section>
-    <section id="ask" hidden></section>
-    <section id="model" hidden></section>
-    <section id="replies" hidden></section>
-    <section id="tracker" hidden></section>
+  <main id="top" class="board">
+    <section class="first" aria-labelledby="verdict">
+      <article class="sheet sheet-main" data-settle>
+        <svg class="pin pin-l"><use href="#pin"/></svg>
+        <div class="letterhead"><span class="mono" id="sheet-date">Declared</span></div>
+        <h1 id="verdict"><span class="count" data-k="qualified">161</span> of <span class="count" data-k="discovered">2,629</span> cleared.</h1>
+        <div class="lede-row">
+          <p class="lede">A real outreach run on live YouTube data across eight niches, where every creator was judged by explainable rules, a trained classifier and an authenticity check before a single message was written.</p>
+          <div class="stamp stamp-main" data-stamp aria-hidden="true"><b>Qualified</b><span class="mono" data-k="qualified-n">161</span></div>
+        </div>
+        <div class="merit" role="table" aria-label="Top of the merit list">
+          <div class="merit-head" role="row"><span role="columnheader">Rank</span><span role="columnheader">Roll no.</span><span role="columnheader">Creator</span><span role="columnheader">Niche</span><span role="columnheader" class="num">Followers</span><span role="columnheader" class="num">Eng.</span><span role="columnheader" class="num">Marks</span></div>
+          <div id="merit-rows" role="rowgroup"></div>
+          <div class="cutoff" role="presentation"><span>Cut-off: all ten checks passed</span></div>
+          <div id="withheld-rows" role="rowgroup"></div>
+        </div>
+      </article>
+
+      <aside class="slips" aria-label="Open the work">
+        <a class="slip slip-primary" href="app.html" data-settle>
+          <svg class="pin"><use href="#pin"/></svg>
+          <span class="slip-title">Open the live dashboard</span>
+          <span class="slip-sub">All creators with their audit trail, every message, the tracker, and the classifier.</span>
+          <svg class="slip-arrow"><use href="#arrow"/></svg>
+        </a>
+        <a class="slip" href="https://github.com/HarshDubey23/edxso-influencer-outreach" target="_blank" rel="noopener" data-settle>
+          <svg class="pin"><use href="#pin"/></svg>
+          <span class="slip-title">Read the code</span>
+          <span class="slip-sub">Pipeline, model, API, n8n workflows, dataset CSVs and tests.</span>
+          <svg class="slip-arrow"><use href="#ext"/></svg>
+        </a>
+        <div class="card-index" data-settle>
+          <svg class="pin"><use href="#pin"/></svg>
+          <span class="idx-big mono" id="acc">89.4%</span>
+          <span>niche classifier accuracy on <b id="gold-n">199</b> held-out channels. Hand-written rules alone: <b id="kw-acc">80.9%</b>.</span>
+        </div>
+      </aside>
+    </section>
+
+    <section id="decided" class="band" aria-labelledby="decided-h">
+      <h2 id="decided-h">How every result was decided</h2>
+      <p class="band-lede">Nine steps, run in this order for every channel. Each sheet shows how many survived it.</p>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <section id="withheld" class="band" aria-labelledby="withheld-h">
+      <h2 id="withheld-h">Withheld, with reasons</h2>
+      <p class="band-lede">No silent rejections. Every withheld channel carries the exact rule it failed; a channel can fail several.</p>
+      <div class="withheld-grid">
+        <article class="sheet sheet-tally" data-settle>
+          <svg class="pin pin-l"><use href="#pin"/></svg><svg class="pin pin-r"><use href="#pin"/></svg>
+          <div class="letterhead"><span>Reasons for withholding</span><span class="mono" id="rej-total"></span></div>
+          <div class="tally" id="tally"></div>
+        </article>
+        <article class="sheet sheet-cases" data-settle>
+          <svg class="pin pin-l"><use href="#pin"/></svg>
+          <div class="letterhead"><span>Case file</span><span class="mono">in range, one rule failed</span></div>
+          <ul class="cases" id="cases"></ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="examiner" class="band" aria-labelledby="examiner-h">
+      <h2 id="examiner-h">Try the examiner</h2>
+      <p class="band-lede">The trained classifier runs here, in your browser: no server, no API key. Type a channel name on the first line and a few video titles below it.</p>
+      <div class="exam">
+        <article class="sheet sheet-exam" data-settle>
+          <svg class="pin pin-l"><use href="#pin"/></svg><svg class="pin pin-r"><use href="#pin"/></svg>
+          <label class="letterhead" for="exam-in"><span>Candidate channel</span><span class="mono">edit me</span></label>
+          <textarea id="exam-in" spellcheck="false">Paisa Wise with Neha
+How I save 40% of my first salary
+SIP vs FD explained in 5 minutes
+Credit card mistakes to avoid
+My monthly budget spreadsheet</textarea>
+          <div class="presets" role="group" aria-label="Example channels">
+            <button type="button" data-preset="0">Teacher</button><button type="button" data-preset="1">Gamer</button>
+            <button type="button" data-preset="2">Skincare</button><button type="button" data-preset="3">Off-topic</button>
+          </div>
+        </article>
+        <article class="sheet sheet-result" aria-live="polite" data-settle>
+          <svg class="pin pin-l"><use href="#pin"/></svg>
+          <div class="letterhead"><span>Examiner's verdict</span><span class="mono" id="exam-conf"></span></div>
+          <div class="stamp stamp-exam" id="exam-stamp"><b id="exam-niche">Fintech</b></div>
+          <div class="probs" id="exam-probs"></div>
+          <p class="note-ball" id="exam-terms"></p>
+        </article>
+      </div>
+    </section>
+
+    <section id="letters" class="band" aria-labelledby="letters-h">
+      <h2 id="letters-h">Letters that went out</h2>
+      <p class="band-lede"><b class="mono" data-k="approved">158</b> of <b class="mono" data-k="qualified">161</b> messages passed every automatic check: length, a real reference to the creator's own content, no invented numbers, no generic opener. Two of them, exactly as written:</p>
+      <div class="letters" id="letters-list"></div>
+    </section>
+
+    <section id="safeguards" class="band" aria-labelledby="safeguards-h">
+      <h2 id="safeguards-h">Nothing sent twice. Nothing invented.</h2>
+      <article class="sheet sheet-ledger" data-settle>
+        <svg class="pin pin-l"><use href="#pin"/></svg><svg class="pin pin-r"><use href="#pin"/></svg>
+        <div class="letterhead"><span class="mono">Enforced in code, covered by tests</span></div>
+        <dl class="ledger">
+          <div><dt>Write-ahead log</dt><dd>A row is written before an email leaves; a crash mid-send blocks a resend instead of emailing twice.</dd></div>
+          <div><dt>Duplicate lock</dt><dd>One send per creator and per inbox, checked in code and enforced by unique indexes in SQLite.</dd></div>
+          <div><dt>No blind retries</dt><dd>If n8n doesn't answer, the send is marked unconfirmed, never retried automatically.</dd></div>
+          <div><dt>Do-not-contact</dt><dd>An unsubscribe reply goes on a suppression list that every campaign checks before sending.</dd></div>
+          <div><dt>Published emails only</dt><dd>Taken only from the creator's own description, website or business line. <b class="mono" data-k="notfound">95</b> are marked Not Found, none guessed.</dd></div>
+          <div><dt>Private data stays private</dt><dd>Audience age and gender are private YouTube Analytics, so they are marked unavailable.</dd></div>
+          <div><dt>Instagram by hand</dt><dd>Meta allows no automated cold DMs; <b class="mono" data-k="dms">160</b> DMs are queued for a person to send.</dd></div>
+          <div><dt>Human review gate</dt><dd>Messages that fail validation three times are held, never sent automatically.</dd></div>
+        </dl>
+        <div class="stamp stamp-ledger" data-stamp aria-hidden="true"><b>Verified</b><span class="mono">26 tests</span></div>
+      </article>
+    </section>
+
+    <section class="close" aria-labelledby="close-h">
+      <article class="sheet sheet-close" data-settle>
+        <svg class="pin pin-l"><use href="#pin"/></svg><svg class="pin pin-r"><use href="#pin"/></svg>
+        <h2 id="close-h">Inspect the full result.</h2>
+        <ul class="close-links">
+          <li><a href="app.html"><span>Live dashboard</span><span class="sub">every creator, message and log row</span><svg><use href="#arrow"/></svg></a></li>
+          <li><a href="https://github.com/HarshDubey23/edxso-influencer-outreach" target="_blank" rel="noopener"><span>Source code</span><span class="sub">Python pipeline, FastAPI, n8n, tests</span><svg><use href="#ext"/></svg></a></li>
+          <li><a href="https://github.com/HarshDubey23/edxso-influencer-outreach/blob/main/MODEL_CARD.md" target="_blank" rel="noopener"><span>Model card</span><span class="sub">experiments, confusion matrix, limits</span><svg><use href="#ext"/></svg></a></li>
+          <li><a href="https://github.com/HarshDubey23/edxso-influencer-outreach/blob/main/output/ALL_influencers_dataset.csv" target="_blank" rel="noopener"><span>Full dataset</span><span class="sub">all channels with status and reasons</span><svg><use href="#ext"/></svg></a></li>
+        </ul>
+      </article>
+    </section>
   </main>
 
-  <dialog id="detail" aria-label="Creator detail"><div class="dlg" id="detail-body"></div></dialog>
-
-  <footer class="wrap">
-    Built by Harsh Dubey for the EDXSO AI Engineer Intern assignment. All creator data is real and public (YouTube Data API);
-    nothing is estimated or invented, and unavailable fields are marked. Brands other than EDXSO are fictional demo briefs.
-    No real creator was emailed: test sends went only to the author's inbox. <span id="generated"></span>
+  <footer class="foot">
+    <p>All creator data is real and public (YouTube Data API). Nothing is estimated or invented; unavailable fields are marked.
+      EDXSO is pitched by name only; every other brand is a fictional demo brief. No real creator was emailed: test sends
+      went only to the operator's own inbox. Emails on this public page are masked.</p>
+    <p class="mono" id="generated"></p>
   </footer>
-  <script type="module" src="app.js"></script>
+  <script type="module" src="landing.js"></script>
 </body>
 </html>

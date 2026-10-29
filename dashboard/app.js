@@ -10,6 +10,10 @@ const NICHE = {
   crypto: "Crypto & Web3", gaming: "Gaming", lifestyle: "Lifestyle", technology: "Technology", other: "Other / unsure",
 };
 const nicheName = (k) => NICHE[k] || k;
+// rejection counts are named for the failure, not the check, so a count never reads as its opposite
+const REJECT = { audience_not_children: "Made for kids", sample_size: "Too few videos", individual_creator: "Institution, not a creator",
+  active: "Inactive channel", audience_authenticity: "Inauthentic audience", niche_relevance: "Off-niche (rules)", ml_niche_agreement: "Off-niche (classifier)",
+  followers: "Outside follower range", engagement: "Low engagement", brand_safety: "Brand-safety terms" };
 const CHECK = {
   followers: "Follower range", engagement: "Engagement rate", sample_size: "Enough videos", active: "Recently active",
   niche_relevance: "Niche relevance (rules)", ml_niche_agreement: "Niche classifier (ML)", audience_authenticity: "Audience authenticity",
@@ -78,10 +82,10 @@ function renderOverview() {
       <div class="kpi"><b>${gold != null ? Math.round(gold * 100) + "%" : "—"}</b><span>classifier accuracy (held-out)</span></div>
     </div>
     <div class="flow" aria-label="Pipeline">
-      <span>YouTube Data API</span><i>→</i><span>Filter: rules</span><i>+</i><span class="ai">ML niche classifier</span><i>+</i>
-      <span>Authenticity score</span><i>→</i><span>Enrich (email, links)</span><i>→</i><span class="ai">Gemini themes &amp; tone</span><i>→</i>
-      <span class="ai">Semantic brand fit</span><i>→</i><span class="ai">Gemini email + DM</span><i>→</i><span>Validate &amp; review</span><i>→</i>
-      <span>n8n + Gmail</span><i>→</i><span>Tracker</span><i>→</i><span class="ai">Reply triage</span><i>→</i><span>Follow-up</span>
+      <span>YouTube Data API</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span>Filter: rules</span><i>+</i><span class="ai">ML niche classifier</span><i>+</i>
+      <span>Authenticity score</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span>Enrich (email, links)</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span class="ai">Gemini themes &amp; tone</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i>
+      <span class="ai">Semantic brand fit</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span class="ai">Gemini email + DM</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span>Validate &amp; review</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i>
+      <span>n8n + Gmail</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span>Tracker</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span class="ai">Reply triage</span><i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></i><span>Follow-up</span>
     </div>
 
     <h2>Funnel by niche</h2>
@@ -100,7 +104,7 @@ function renderOverview() {
     <div class="grid2" style="margin-top:16px">
       <div class="card"><h3>Why creators were rejected</h3><p class="muted small">Every rejected profile carries its exact reasons. A creator can fail several rules.</p>
         <div class="hbars">${Object.entries(rej).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
-          <div class="hbar"><span>${h(CHECK[k] || k)}</span><div class="bar"><i style="width:${(v / rejMax) * 100}%"></i></div><span class="num">${fmt(v)}</span></div>`).join("")}</div>
+          <div class="hbar"><span>${h(REJECT[k] || CHECK[k] || k)}</span><div class="bar"><i style="width:${(v / rejMax) * 100}%"></i></div><span class="num">${fmt(v)}</span></div>`).join("")}</div>
       </div>
       <div class="card"><h3>What makes this different</h3>
         <ul class="small" style="margin:0;padding-left:18px;display:grid;gap:6px">
@@ -165,19 +169,19 @@ function openCreator(id, campaign) {
       <span class="pill">${h(c.segment)}</span><a href="${h(c.url)}" target="_blank" rel="noopener">Open channel ↗</a></p>
     <div class="kpis"><div class="kpi"><b>${fmt(c.followers)}</b><span>followers</span></div><div class="kpi"><b>${pct(c.er, 2)}</b><span>engagement rate</span></div>
       <div class="kpi"><b>${fmt(c.median_views)}</b><span>median views</span></div><div class="kpi"><b>${c.auth ?? "—"}</b><span>authenticity / 100</span></div></div>
-    <h3>Filter audit trail</h3><ul class="checks">${Object.entries(c.checks).map(([k, v]) => `<li><span class="${v.passed ? "ok" : "no"}">${v.passed ? "✓" : "✕"}</span><span>${h(CHECK[k] || k)}</span><span>${h(v.detail)}</span></li>`).join("")}</ul>
+    <h3>Filter audit trail</h3><ul class="checks">${Object.entries(c.checks).map(([k, v]) => `<li><span class="${v.passed ? "ok" : "no"}">${v.passed ? '<svg viewBox="0 0 16 16" aria-label="passed"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>' : '<svg viewBox="0 0 16 16" aria-label="failed"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>'}</span><span>${h(CHECK[k] || k)}</span><span>${h(v.detail)}</span></li>`).join("")}</ul>
     ${c.auth_flags?.length ? `<h3 style="margin-top:16px">Authenticity flags</h3><ul class="small">${c.auth_flags.map((f) => `<li>${h(f)}</li>`).join("")}</ul>` : ""}
     ${Object.keys(c.ml_probs || {}).length ? `<h3 style="margin-top:16px">Niche classifier (hybrid)</h3>${probBars(c.ml_probs)}` : ""}
     <h3 style="margin-top:16px">Recent videos</h3><ul class="small">${c.titles.map((t) => `<li>${h(t)}</li>`).join("") || "<li>Not fetched (outside the follower range)</li>"}</ul>
     ${c.status === "qualified" ? `<h3>Enrichment</h3><ul class="checks">
-      <li><span>@</span><span>Email</span><span>${h(c.email)}${c.email_source ? ` <span class="muted">(${h(c.email_source)})</span>` : ""}</span></li>
-      <li><span>#</span><span>Themes</span><span>${h((c.themes || []).join(", "))}</span></li>
-      <li><span>~</span><span>Tone</span><span>${h(c.tone)}</span></li>
-      <li><span>★</span><span>Standout video</span><span>${h(c.standout)}</span></li>
-      <li><span>◎</span><span>Inferred audience</span><span>${h(c.audience)}</span></li>
-      <li><span>↗</span><span>Links</span><span>${[c.website, ...Object.values(c.socials || {})].filter(Boolean).map((u) => `<a href="${h(u)}" target="_blank" rel="noopener">${h(u)}</a>`).join(" · ") || "None published"}</span></li>
-      <li><span>⚖</span><span>Audience age / gender</span><span>Not Available (private YouTube Analytics)</span></li>
-      <li><span>%</span><span>Brand fit (semantic)</span><span>${c.brand_fit ?? "—"} / 100</span></li></ul>` : ""}
+      <li class="kv"><span>Email</span><span>${h(c.email)}${c.email_source ? ` <span class="muted">(${h(c.email_source)})</span>` : ""}</span></li>
+      <li class="kv"><span>Themes</span><span>${h((c.themes || []).join(", "))}</span></li>
+      <li class="kv"><span>Tone</span><span>${h(c.tone)}</span></li>
+      <li class="kv"><span>Standout video</span><span>${h(c.standout)}</span></li>
+      <li class="kv"><span>Inferred audience</span><span>${h(c.audience)}</span></li>
+      <li class="kv"><span>Links</span><span>${[c.website, ...Object.values(c.socials || {})].filter(Boolean).map((u) => `<a href="${h(u)}" target="_blank" rel="noopener">${h(u)}</a>`).join(" · ") || "None published"}</span></li>
+      <li class="kv"><span>Audience age / gender</span><span>Not Available (private YouTube Analytics)</span></li>
+      <li class="kv"><span>Brand fit (semantic)</span><span>${c.brand_fit ?? "—"} / 100</span></li></ul>` : ""}
     ${m ? `<h3 style="margin-top:16px">Generated outreach</h3>${messageCard(m)}` : ""}`;
   $("#detail").showModal();
 }

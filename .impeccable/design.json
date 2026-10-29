@@ -1,0 +1,679 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T19:29:40+00:00",
+  "title": "Design System: Creator Outreach Engine",
+  "extensions": {
+    "colorMeta": {
+      "felt": {
+        "role": "primary",
+        "displayName": "Notice-board Felt",
+        "canonical": "#1d3a31",
+        "tonalRamp": [
+          "#1a332b",
+          "#2c584b",
+          "#3f7e6a",
+          "#52a38a",
+          "#74b9a4",
+          "#99ccbc",
+          "#c2e0d7",
+          "#eef6f4"
+        ]
+      },
+      "felt-deep": {
+        "role": "primary",
+        "displayName": "Felt Deep",
+        "canonical": "#142a23",
+        "tonalRamp": [
+          "#19342b",
+          "#2b5a4b",
+          "#3d806b",
+          "#4fa68a",
+          "#71bca4",
+          "#97cebc",
+          "#c1e1d7",
+          "#eef7f4"
+        ]
+      },
+      "felt-ink": {
+        "role": "neutral",
+        "displayName": "Felt Ink",
+        "canonical": "#e8efe9",
+        "tonalRamp": [
+          "#1f2d21",
+          "#364e3a",
+          "#4d6f52",
+          "#64906b",
+          "#84a989",
+          "#a5c0a9",
+          "#c9d9cb",
+          "#f0f5f1"
+        ]
+      },
+      "felt-soft": {
+        "role": "neutral",
+        "displayName": "Felt Moss",
+        "canonical": "#a9c2b6",
+        "tonalRamp": [
+          "#202d27",
+          "#374e43",
+          "#4e6e5f",
+          "#668f7b",
+          "#85a897",
+          "#a5c0b3",
+          "#c9d9d1",
+          "#f0f4f2"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Typed Sheet",
+        "canonical": "#f6f7f4",
+        "tonalRamp": [
+          "#282c20",
+          "#464d38",
+          "#636d4f",
+          "#818e67",
+          "#9ca786",
+          "#b7bfa6",
+          "#d4d8ca",
+          "#f3f4f0"
+        ]
+      },
+      "paper-rule": {
+        "role": "neutral",
+        "displayName": "Sheet Rule",
+        "canonical": "#d9ddd5",
+        "tonalRamp": [
+          "#262a22",
+          "#42493b",
+          "#5e6854",
+          "#7a876e",
+          "#96a18b",
+          "#b2bbaa",
+          "#d1d6cc",
+          "#f2f4f1"
+        ]
+      },
+      "index-card": {
+        "role": "neutral",
+        "displayName": "Index Card",
+        "canonical": "#fffef8",
+        "tonalRamp": [
+          "#4c4200",
+          "#857200",
+          "#bda200",
+          "#f5d200",
+          "#ffe12e",
+          "#ffe966",
+          "#fff2a3",
+          "#fffbe5"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Type Black",
+        "canonical": "#15181a",
+        "tonalRamp": [
+          "#22272a",
+          "#3b4449",
+          "#546068",
+          "#6d7d87",
+          "#8b99a2",
+          "#aab4bb",
+          "#ccd2d6",
+          "#f1f3f4"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Carbon",
+        "canonical": "#4f5752",
+        "tonalRamp": [
+          "#242826",
+          "#3f4542",
+          "#5a635d",
+          "#758079",
+          "#919b95",
+          "#afb6b2",
+          "#cfd3d1",
+          "#f2f3f2"
+        ]
+      },
+      "stamp-red": {
+        "role": "primary",
+        "displayName": "Stamp Red",
+        "canonical": "#c62f26",
+        "tonalRamp": [
+          "#400f0c",
+          "#6f1a15",
+          "#9e261e",
+          "#cd3127",
+          "#dd5850",
+          "#e6847f",
+          "#f0b5b2",
+          "#fbebea"
+        ]
+      },
+      "ballpoint-blue": {
+        "role": "secondary",
+        "displayName": "Ballpoint Blue",
+        "canonical": "#2342a8",
+        "tonalRamp": [
+          "#0d193f",
+          "#172b6e",
+          "#213d9c",
+          "#2a50cb",
+          "#5272db",
+          "#8098e5",
+          "#b3c1ef",
+          "#eaeefb"
+        ]
+      },
+      "brass": {
+        "role": "tertiary",
+        "displayName": "Pin Brass",
+        "canonical": "#c9a14e",
+        "tonalRamp": [
+          "#3b2d12",
+          "#664f1f",
+          "#91702c",
+          "#bc9139",
+          "#ceaa5f",
+          "#dbc18a",
+          "#eadab9",
+          "#f9f5eb"
+        ]
+      },
+      "desk-grey": {
+        "role": "neutral",
+        "displayName": "Desk Grey",
+        "canonical": "#e9ede9",
+        "tonalRamp": [
+          "#222a22",
+          "#3c493c",
+          "#556855",
+          "#6e876e",
+          "#8ca18c",
+          "#abbaab",
+          "#cdd6cd",
+          "#f1f4f1"
+        ]
+      },
+      "desk-line": {
+        "role": "neutral",
+        "displayName": "Desk Line",
+        "canonical": "#d3d9d2",
+        "tonalRamp": [
+          "#242923",
+          "#3e483d",
+          "#596656",
+          "#738570",
+          "#909f8e",
+          "#aeb9ac",
+          "#ced5cd",
+          "#f1f3f1"
+        ]
+      },
+      "desk-soft": {
+        "role": "neutral",
+        "displayName": "Desk Soft",
+        "canonical": "#eef1ed",
+        "tonalRamp": [
+          "#242b21",
+          "#3e4b3a",
+          "#586a53",
+          "#738a6b",
+          "#90a489",
+          "#aebca9",
+          "#ced7cb",
+          "#f1f4f1"
+        ]
+      },
+      "felt-tint": {
+        "role": "neutral",
+        "displayName": "Felt Tint",
+        "canonical": "#dde8e2",
+        "tonalRamp": [
+          "#1f2e26",
+          "#364f41",
+          "#4c715d",
+          "#639278",
+          "#82ab95",
+          "#a4c1b1",
+          "#c8dad0",
+          "#f0f5f2"
+        ]
+      },
+      "pass-green": {
+        "role": "status",
+        "displayName": "Pass Green",
+        "canonical": "#1f6f3f",
+        "tonalRamp": [
+          "#113c22",
+          "#1d683b",
+          "#299454",
+          "#35bf6d",
+          "#5cd18b",
+          "#87deaa",
+          "#b7ebcc",
+          "#ebf9f1"
+        ]
+      },
+      "pass-tint": {
+        "role": "status",
+        "displayName": "Pass Tint",
+        "canonical": "#dff0e4",
+        "tonalRamp": [
+          "#183421",
+          "#2a5a38",
+          "#3c8050",
+          "#4ea768",
+          "#71bc87",
+          "#97cea7",
+          "#c0e2ca",
+          "#eef7f0"
+        ]
+      },
+      "caution-umber": {
+        "role": "status",
+        "displayName": "Caution Umber",
+        "canonical": "#9a4a10",
+        "tonalRamp": [
+          "#452107",
+          "#783a0c",
+          "#ab5212",
+          "#de6b17",
+          "#eb8942",
+          "#f1a974",
+          "#f6cbac",
+          "#fdf1e8"
+        ]
+      },
+      "caution-tint": {
+        "role": "status",
+        "displayName": "Caution Tint",
+        "canonical": "#f6e7d8",
+        "tonalRamp": [
+          "#3e260e",
+          "#6c4219",
+          "#995e23",
+          "#c77a2e",
+          "#d89655",
+          "#e2b283",
+          "#eed1b4",
+          "#faf2ea"
+        ]
+      },
+      "stamp-tint": {
+        "role": "status",
+        "displayName": "Stamp Tint",
+        "canonical": "#f8e1df",
+        "tonalRamp": [
+          "#3f120e",
+          "#6d1f18",
+          "#9b2c22",
+          "#c9382c",
+          "#d95e53",
+          "#e48981",
+          "#efb8b4",
+          "#faebea"
+        ]
+      },
+      "night-board": {
+        "role": "neutral",
+        "displayName": "Night Board",
+        "canonical": "#10211b",
+        "tonalRamp": [
+          "#19342a",
+          "#2b5949",
+          "#3e7f68",
+          "#50a587",
+          "#72bba1",
+          "#98cdba",
+          "#c1e1d6",
+          "#eef7f4"
+        ]
+      },
+      "night-sheet": {
+        "role": "neutral",
+        "displayName": "Night Sheet",
+        "canonical": "#172b24",
+        "tonalRamp": [
+          "#1b322a",
+          "#2e5648",
+          "#427b67",
+          "#559f86",
+          "#77b6a0",
+          "#9bcab9",
+          "#c3dfd5",
+          "#eef6f3"
+        ]
+      },
+      "night-line": {
+        "role": "neutral",
+        "displayName": "Night Line",
+        "canonical": "#2c4a3f",
+        "tonalRamp": [
+          "#1d3029",
+          "#315347",
+          "#467665",
+          "#5b9a83",
+          "#7cb19e",
+          "#9fc6b8",
+          "#c5ddd4",
+          "#eff5f3"
+        ]
+      },
+      "night-stamp": {
+        "role": "status",
+        "displayName": "Night Stamp",
+        "canonical": "#ff8f86",
+        "tonalRamp": [
+          "#4c0600",
+          "#850a00",
+          "#bd0e00",
+          "#f51200",
+          "#ff3d2e",
+          "#ff7166",
+          "#ffaaa3",
+          "#ffe7e5"
+        ]
+      },
+      "night-ballpoint": {
+        "role": "status",
+        "displayName": "Night Ballpoint",
+        "canonical": "#9fb4ff",
+        "tonalRamp": [
+          "#00114c",
+          "#001d85",
+          "#0029bd",
+          "#0036f5",
+          "#2e5cff",
+          "#6687ff",
+          "#a3b7ff",
+          "#e5ebff"
+        ]
+      },
+      "night-pass": {
+        "role": "status",
+        "displayName": "Night Pass",
+        "canonical": "#7fd69b",
+        "tonalRamp": [
+          "#133a1f",
+          "#206436",
+          "#2e8f4d",
+          "#3bb964",
+          "#61cc83",
+          "#8bdaa4",
+          "#b9e9c9",
+          "#ecf9f0"
+        ]
+      },
+      "night-caution": {
+        "role": "status",
+        "displayName": "Night Caution",
+        "canonical": "#f0a46c",
+        "tonalRamp": [
+          "#452207",
+          "#783a0c",
+          "#ab5311",
+          "#de6b17",
+          "#ec8a41",
+          "#f1a974",
+          "#f6cbac",
+          "#fdf1e8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "One verdict headline per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Band headings on felt."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Step names, slip titles, letter subjects, ledger terms."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, ledes, letters."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Sheet letterheads and table heads only."
+      },
+      "margin-note": {
+        "displayName": "Margin Note",
+        "purpose": "Ballpoint reasons and examiner notes (italic)."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Counts and accuracy figures."
+      },
+      "figure-small": {
+        "displayName": "Figure Small",
+        "purpose": "Roll numbers, counts, addresses."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pinned-sheet",
+        "value": "0 1px 1px rgba(0,0,0,.25), 0 18px 40px -12px rgba(0,0,0,.55)",
+        "purpose": "Full result sheets on felt."
+      },
+      {
+        "name": "pinned-slip",
+        "value": "0 1px 1px rgba(0,0,0,.25), 0 14px 30px -12px rgba(0,0,0,.55)",
+        "purpose": "Slips, steps, letters, index card."
+      },
+      {
+        "name": "pinned-slip-hover",
+        "value": "0 1px 1px rgba(0,0,0,.25), 0 22px 40px -14px rgba(0,0,0,.6)",
+        "purpose": "Slip lifted on hover."
+      },
+      {
+        "name": "operate-panel",
+        "value": "0 1px 1px rgba(10,20,15,.08), 0 10px 24px -14px rgba(10,20,15,.35)",
+        "purpose": "Operate panels, light theme."
+      },
+      {
+        "name": "operate-panel-dark",
+        "value": "0 1px 2px rgba(0,0,0,.4)",
+        "purpose": "Operate panels, dark theme."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-settle",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "House exponential ease-out for entrance and state motion."
+      },
+      {
+        "name": "sheet-settle",
+        "value": "translate 0 -16px to 0, .9s",
+        "purpose": "Sheets settle onto pins once, from a visible state."
+      },
+      {
+        "name": "stamp-press",
+        "value": "scale 1.6, blur 2px, opacity .3 to rest, .55s",
+        "purpose": "Verdict stamps press once; classifier stamp re-presses on label change."
+      },
+      {
+        "name": "cutoff-draw",
+        "value": "scaleX 0 to 1, 1.1s, delay .5s",
+        "purpose": "Red cut-off line draws once."
+      },
+      {
+        "name": "count-up",
+        "value": "1400ms, 1 - 2^(-10t)",
+        "purpose": "Headline counts tick up once."
+      },
+      {
+        "name": "slip-lift",
+        "value": "transform and box-shadow .4s",
+        "purpose": "Slip hover."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "All motion off; content static and visible."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "rail-short",
+        "value": "480px"
+      },
+      {
+        "name": "tally-stack",
+        "value": "560px"
+      },
+      {
+        "name": "steps-single",
+        "value": "620px"
+      },
+      {
+        "name": "merit-compact",
+        "value": "640px"
+      },
+      {
+        "name": "ledger-single, operate-tabs-wrap",
+        "value": "760px"
+      },
+      {
+        "name": "rail-nav-hidden, exam-single",
+        "value": "860px"
+      },
+      {
+        "name": "letters-single",
+        "value": "900px"
+      },
+      {
+        "name": "first-stack, steps-double",
+        "value": "1000px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Rail Call to Action",
+      "kind": "button",
+      "refersTo": "button-rail",
+      "description": "Paper chip on the felt rail; the persistent primary link.",
+      "html": "<div class=\"ds-felt\"><a class=\"ds-rail-cta\" href=\"#\">Live dashboard <svg viewBox=\"0 0 24 24\"><path d=\"M4 12h15M13 6l6 6-6 6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"/></svg></a></div>",
+      "css": ".ds-felt{background:#1d3a31;padding:16px}.ds-rail-cta{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;background:#f6f7f4;color:#15181a;font:700 14px/1.2 'Public Sans',system-ui,sans-serif;text-decoration:none;border-radius:3px}.ds-rail-cta svg{width:18px;height:18px}.ds-rail-cta:hover{background:#fff}.ds-rail-cta:focus-visible{outline:3px solid #c9a14e;outline-offset:3px}"
+    },
+    {
+      "name": "Primary Action Slip",
+      "kind": "custom",
+      "refersTo": "slip-primary",
+      "description": "Stamp-red pinned slip; the single primary action on the board.",
+      "html": "<div class=\"ds-felt\"><a class=\"ds-slip\" href=\"#\"><svg class=\"ds-pin\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"11\" r=\"8\" fill=\"#c9a14e\"/><circle cx=\"9.5\" cy=\"8.5\" r=\"2.2\" fill=\"#fff6d6\" opacity=\".7\"/></svg><span class=\"ds-slip-title\">Open the live dashboard</span><span class=\"ds-slip-sub\">All creators with their audit trail.</span></a></div>",
+      "css": ".ds-felt{background:#1d3a31;padding:28px}.ds-slip{position:relative;display:grid;gap:6px;padding:26px 22px 20px;background:#c62f26;color:#fff;text-decoration:none;border-radius:2px;box-shadow:0 1px 1px rgba(0,0,0,.25),0 14px 30px -12px rgba(0,0,0,.55);transform:rotate(1.2deg);transition:transform .4s cubic-bezier(.16, 1, .3, 1),box-shadow .4s cubic-bezier(.16, 1, .3, 1)}.ds-slip:hover{transform:rotate(0) translateY(-3px);box-shadow:0 1px 1px rgba(0,0,0,.25),0 22px 40px -14px rgba(0,0,0,.6)}.ds-slip:focus-visible{outline:3px solid #f6f7f4;outline-offset:3px}.ds-pin{position:absolute;top:-9px;left:50%;margin-left:-13px;width:26px;height:26px}.ds-slip-title{font:800 28px/1 'Big Shoulders Display','Arial Narrow',sans-serif;text-transform:uppercase}.ds-slip-sub{font:14px/1.5 'Public Sans',system-ui,sans-serif;color:#ffe3df}"
+    },
+    {
+      "name": "Verdict Stamp",
+      "kind": "custom",
+      "refersTo": "verdict-stamp",
+      "description": "Red double-ruled rubber stamp pressed once over a sheet.",
+      "html": "<div class=\"ds-paper\"><div class=\"ds-stamp\"><b>Qualified</b><span>161</span></div></div>",
+      "css": ".ds-paper{background:#f6f7f4;padding:32px}.ds-stamp{display:inline-flex;flex-direction:column;align-items:center;padding:8px 18px 6px;color:#c62f26;border:4px double #c62f26;border-radius:6px;font:900 34px/1 'Big Shoulders Display','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.06em;mix-blend-mode:multiply;transform:rotate(-9deg);animation:ds-press .55s cubic-bezier(.16, 1, .3, 1) both}.ds-stamp span{font:600 13px/1.2 'JetBrains Mono',ui-monospace,monospace;letter-spacing:0;margin-top:2px}@keyframes ds-press{0%{opacity:.3;transform:rotate(-9deg) scale(1.6);filter:blur(2px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:rotate(-9deg) scale(1)}}@media (prefers-reduced-motion:reduce){.ds-stamp{animation:none}}"
+    },
+    {
+      "name": "Merit List",
+      "kind": "custom",
+      "refersTo": "result-sheet",
+      "description": "Result sheet: letterhead, rows set by rank, red cut-off, struck withheld row with ballpoint reason.",
+      "html": "<div class=\"ds-sheet\"><div class=\"ds-lh\">Declared <span>30 Oct 2026</span></div><div class=\"ds-row ds-r1\"><b>1</b><span>Finance with SKT</span><i>98</i></div><div class=\"ds-row ds-r2\"><b>2</b><span>YRG Gaming</span><i>92</i></div><div class=\"ds-cut\"><span>Cut-off: all ten checks passed</span></div><div class=\"ds-row ds-struck\"><b>-</b><span>Gyan Tech</span><i></i></div><p class=\"ds-why\">Withheld: classifier says technology (0.70)</p></div>",
+      "css": ".ds-sheet{background:#f6f7f4;color:#15181a;padding:28px;border-radius:2px;box-shadow:0 1px 1px rgba(0,0,0,.25),0 18px 40px -12px rgba(0,0,0,.55);font:14px/1.5 'Public Sans',system-ui,sans-serif}.ds-lh{display:flex;justify-content:space-between;border-bottom:2px solid #15181a;padding-bottom:10px;margin-bottom:12px;font:600 13px/1.3 'Public Sans',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em}.ds-lh span{text-transform:none;letter-spacing:0;font-weight:400;color:#4f5752;font-variant-numeric:tabular-nums}.ds-row{display:grid;grid-template-columns:2.6rem 1fr 3.6rem;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid #d9ddd5}.ds-row b,.ds-row i{font:800 1.3em/1 'Big Shoulders Display','Arial Narrow',sans-serif;font-style:normal}.ds-row i{text-align:right}.ds-row span{font-weight:700}.ds-r1{font-size:28px}.ds-r2{font-size:22px}.ds-cut{position:relative;height:34px;display:flex;align-items:center}.ds-cut:before{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#c62f26}.ds-cut span{position:relative;background:#f6f7f4;padding-right:10px;color:#c62f26;font:700 11px/1 'Public Sans',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em}.ds-struck span{text-decoration:line-through;text-decoration-color:#c62f26;text-decoration-thickness:1.5px;color:#4f5752}.ds-why{margin:-2px 0 0 52px;font:italic 13px/1.4 'Public Sans',system-ui,sans-serif;color:#2342a8}"
+    },
+    {
+      "name": "Index Card",
+      "kind": "card",
+      "refersTo": "result-sheet",
+      "description": "Ruled index card carrying one headline figure in ballpoint mono.",
+      "html": "<div class=\"ds-felt\"><div class=\"ds-card\"><span class=\"ds-big\">89.4%</span><span>niche classifier accuracy on <b>199</b> held-out channels.</span></div></div>",
+      "css": ".ds-felt{background:#1d3a31;padding:28px}.ds-card{padding:24px 20px 18px;background:#fffef8;color:#15181a;border-top:6px solid #2342a8;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);font:14px/28px 'Public Sans',system-ui,sans-serif;transform:rotate(.6deg);background-image:linear-gradient(transparent 27px,#2342a81f 28px);background-size:100% 28px;background-position:0 18px}.ds-big{display:block;font:600 46px/1 'JetBrains Mono',ui-monospace,monospace;color:#2342a8;margin-bottom:6px;letter-spacing:-.03em}"
+    },
+    {
+      "name": "Preset Button",
+      "kind": "button",
+      "refersTo": "preset-button",
+      "description": "Ink-outlined control on paper; inverts on hover.",
+      "html": "<div class=\"ds-paper\"><button class=\"ds-preset\" type=\"button\">Teacher</button> <button class=\"ds-preset\" type=\"button\">Gamer</button></div>",
+      "css": ".ds-paper{background:#f6f7f4;padding:20px}.ds-preset{font:600 13px/1 'Public Sans',system-ui,sans-serif;padding:8px 12px;border:1.5px solid #15181a;background:transparent;color:#15181a;border-radius:3px;cursor:pointer}.ds-preset:hover{background:#15181a;color:#f6f7f4}.ds-preset:focus-visible{outline:3px solid #2342a8;outline-offset:3px}"
+    },
+    {
+      "name": "Ruled Textarea",
+      "kind": "input",
+      "refersTo": "result-sheet",
+      "description": "Borderless mono input written on the sheet's 28px ruling.",
+      "html": "<div class=\"ds-paper\"><textarea class=\"ds-ruled\" spellcheck=\"false\">Paisa Wise with Neha\nSIP vs FD explained in 5 minutes</textarea></div>",
+      "css": ".ds-paper{background:#f6f7f4;padding:20px}.ds-ruled{width:100%;min-height:120px;border:0;background:transparent;color:#15181a;font:500 17px/28px 'JetBrains Mono',ui-monospace,monospace;padding:0;outline:none;resize:vertical;background-image:linear-gradient(transparent 27px,#d9ddd5 28px);background-size:100% 28px}.ds-ruled:focus-visible{outline:3px solid #2342a8;outline-offset:6px}"
+    },
+    {
+      "name": "Operate Tabs",
+      "kind": "nav",
+      "refersTo": "rail-tab-selected",
+      "description": "Felt rail with poster-caps brandmark; selected tab is a paper chip.",
+      "html": "<nav class=\"ds-tabs\"><span class=\"ds-mark\">Outreach Engine</span><button aria-selected=\"true\">Overview</button><button>Creators</button><button>Messages</button></nav>",
+      "css": ".ds-tabs{display:flex;gap:2px;align-items:center;background:#1d3a31;padding:12px 16px}.ds-mark{font:800 22px/1 'Big Shoulders Display','Arial Narrow',sans-serif;text-transform:uppercase;color:#e8efe9;margin-right:16px}.ds-tabs button{border:0;background:none;padding:8px 12px;border-radius:3px;cursor:pointer;color:#a9c2b6;font:15px/1.5 'Public Sans',system-ui,sans-serif}.ds-tabs button:hover{color:#e8efe9;background:#ffffff14}.ds-tabs button[aria-selected=true]{color:#15181a;background:#f6f7f4;font-weight:600}.ds-tabs button:focus-visible{outline:3px solid #c9a14e;outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Merit List",
+    "overview": "It is results day. The page is a green felt notice board, and everything readable on it is a typed paper sheet pinned up with brass pins: ranked lists, tallies, case files, letters. Verdicts are pressed on in red rubber-stamp ink. Marks, reasons, and links are written in blue ballpoint. Headings use condensed poster capitals, the prose is plain typewriter-clean sans, and monospace only ever carries a number. The board is dense where a result sheet would be dense. A sheet does not decorate itself. It ranks, strikes out, and gives reasons.\n\nThe public landing (Persuade) shows the full world: a fibre-textured felt background, slightly rotated sheets, pins, stamps that press in, a cut-off line that draws once. The working dashboard (Operate) is the same world in restrained form. The felt becomes the top rail, sheets become flat panels on a grey desk or, in dark theme, a night board, stamp red and ballpoint blue keep their meanings, and the poster capitals stay on page headings. The landing explicitly rejects the dark AI-landing look, with its gradient headline, metric tiles, and dashboard screenshot.",
+    "keyCharacteristics": [
+      "Felt board ground, paper sheets as the only reading surface.",
+      "State is shown as a mark (strike-through, stamp, ballpoint reason), never as a colour wash alone.",
+      "Rank is shown as type size: the top of a list is set larger.",
+      "Real figures in tabular monospace; everything else in Public Sans or poster caps.",
+      "Motion happens once: sheets settle, stamps press, the cut-off draws, counts tick up."
+    ],
+    "rules": [
+      {
+        "name": "The Two Inks Rule",
+        "body": "Red means a verdict was pressed (qualified, withheld, failed). Blue means an examiner wrote something (a reason, a note, a link). Never swap them, and never use either one as decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mark Not Hue Rule",
+        "body": "A withheld result is struck through in red and given its reason in blue. Colour reinforces the state but never carries it alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rank Is Size Rule",
+        "body": "In a ranked list, rank 1 is set at clamp(20px, 2.2vw, 30px) and each row steps down (24, 20, 17, 15, 14px) until it reaches the 14px base.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Is For Numbers Rule",
+        "body": "JetBrains Mono sets figures, roll numbers, addresses, and the classifier input. It never sets headings or prose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hung By Hand Rule",
+        "body": "Every pinned sheet is rotated slightly and alternates direction with its neighbours. Nothing on the board is rotated more than about 1.2 degrees, except stamps (-9 to 6 degrees).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put every block of reading on a paper sheet; felt carries only headings, ledes and the footer.",
+      "Do give every withheld or failed item a red strike and a blue italic reason.",
+      "Do set figures in JetBrains Mono with tabular numerals, and set rank as type size.",
+      "Do run motion once with `cubic-bezier(.16, 1, .3, 1)`. Sheets settle 16px over 0.9s, the cut-off draws over 1.1s after a 0.5s delay, and counts tick up over 1.4s on an exponential ease-out. Under reduced motion, everything is static and visible by default.",
+      "Do keep stamp red to verdicts and the single primary action."
+    ],
+    "donts": [
+      "Don't build the dark AI-landing: gradient headline, metric-tile hero, dashboard screenshot.",
+      "Don't use JetBrains Mono for headings or prose.",
+      "Don't use stamp red or ballpoint blue as decorative fills or section backgrounds.",
+      "Don't add hard offset shadows, glows, or large radii to paper; sheets are 2px and cast soft drop shadows.",
+      "Don't set a small uppercase label above a heading; uppercase labels live only in a sheet's letterhead and in table heads, where they carry that sheet's data."
+    ]
+  }
+}
