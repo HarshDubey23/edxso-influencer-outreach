@@ -1,0 +1,654 @@
+{
+  "train_size": 385,
+  "train_distribution": {
+    "beauty_fashion": 44,
+    "crypto": 41,
+    "education_parenting": 96,
+    "fintech": 36,
+    "fitness": 43,
+    "gaming": 30,
+    "lifestyle": 42,
+    "technology": 53
+  },
+  "gold_size": 199,
+  "gold_distribution": {
+    "beauty_fashion": 23,
+    "other": 4,
+    "lifestyle": 33,
+    "crypto": 20,
+    "education_parenting": 26,
+    "technology": 26,
+    "fintech": 18,
+    "fitness": 24,
+    "gaming": 25
+  },
+  "uncertain_threshold": 0.3,
+  "experiments": {
+    "keyword_rules": {
+      "gold": {
+        "n": 199,
+        "accuracy": 0.809,
+        "report": {
+          "beauty_fashion": {
+            "precision": 0.8846153846153846,
+            "recall": 1.0,
+            "f1-score": 0.9387755102040817,
+            "support": 23.0
+          },
+          "crypto": {
+            "precision": 0.6153846153846154,
+            "recall": 0.8,
+            "f1-score": 0.6956521739130435,
+            "support": 20.0
+          },
+          "education_parenting": {
+            "precision": 0.8,
+            "recall": 0.6153846153846154,
+            "f1-score": 0.6956521739130435,
+            "support": 26.0
+          },
+          "fintech": {
+            "precision": 0.6666666666666666,
+            "recall": 0.8888888888888888,
+            "f1-score": 0.7619047619047619,
+            "support": 18.0
+          },
+          "fitness": {
+            "precision": 0.9090909090909091,
+            "recall": 0.8333333333333334,
+            "f1-score": 0.8695652173913043,
+            "support": 24.0
+          },
+          "gaming": {
+            "precision": 0.8846153846153846,
+            "recall": 0.92,
+            "f1-score": 0.9019607843137255,
+            "support": 25.0
+          },
+          "lifestyle": {
+            "precision": 0.9285714285714286,
+            "recall": 0.7878787878787878,
+            "f1-score": 0.8524590163934426,
+            "support": 33.0
+          },
+          "technology": {
+            "precision": 0.9090909090909091,
+            "recall": 0.7692307692307693,
+            "f1-score": 0.8333333333333334,
+            "support": 26.0
+          },
+          "other": {
+            "precision": 0.2,
+            "recall": 0.25,
+            "f1-score": 0.2222222222222222,
+            "support": 4.0
+          },
+          "accuracy": 0.8090452261306532,
+          "macro avg": {
+            "precision": 0.7553372553372554,
+            "recall": 0.7627462660795994,
+            "f1-score": 0.752391688176551,
+            "support": 199.0
+          },
+          "weighted avg": {
+            "precision": 0.8264654943046902,
+            "recall": 0.8090452261306532,
+            "f1-score": 0.811112614928408,
+            "support": 199.0
+          }
+        },
+        "labels": [
+          "beauty_fashion",
+          "crypto",
+          "education_parenting",
+          "fintech",
+          "fitness",
+          "gaming",
+          "lifestyle",
+          "technology",
+          "other"
+        ],
+        "confusion": [
+          [
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            16,
+            0,
+            3,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            2,
+            16,
+            2,
+            1,
+            0,
+            1,
+            1,
+            2
+          ],
+          [
+            0,
+            2,
+            0,
+            16,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            20,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            23,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            2,
+            4,
+            1,
+            0,
+            0,
+            26,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            1,
+            0,
+            3,
+            0,
+            20,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    "tfidf_logreg": {
+      "cv_macro_f1": 0.951,
+      "gold": {
+        "n": 199,
+        "accuracy": 0.824,
+        "report": {
+          "beauty_fashion": {
+            "precision": 1.0,
+            "recall": 0.9565217391304348,
+            "f1-score": 0.9777777777777777,
+            "support": 23.0
+          },
+          "crypto": {
+            "precision": 0.9047619047619048,
+            "recall": 0.95,
+            "f1-score": 0.926829268292683,
+            "support": 20.0
+          },
+          "education_parenting": {
+            "precision": 0.8620689655172413,
+            "recall": 0.9615384615384616,
+            "f1-score": 0.9090909090909091,
+            "support": 26.0
+          },
+          "fintech": {
+            "precision": 1.0,
+            "recall": 0.7777777777777778,
+            "f1-score": 0.875,
+            "support": 18.0
+          },
+          "fitness": {
+            "precision": 1.0,
+            "recall": 0.7083333333333334,
+            "f1-score": 0.8292682926829268,
+            "support": 24.0
+          },
+          "gaming": {
+            "precision": 1.0,
+            "recall": 0.76,
+            "f1-score": 0.8636363636363636,
+            "support": 25.0
+          },
+          "lifestyle": {
+            "precision": 0.9545454545454546,
+            "recall": 0.6363636363636364,
+            "f1-score": 0.7636363636363637,
+            "support": 33.0
+          },
+          "technology": {
+            "precision": 1.0,
+            "recall": 0.8846153846153846,
+            "f1-score": 0.9387755102040817,
+            "support": 26.0
+          },
+          "other": {
+            "precision": 0.125,
+            "recall": 1.0,
+            "f1-score": 0.2222222222222222,
+            "support": 4.0
+          },
+          "accuracy": 0.8241206030150754,
+          "macro avg": {
+            "precision": 0.8718195916471778,
+            "recall": 0.8483500369732254,
+            "f1-score": 0.8118040786159253,
+            "support": 199.0
+          },
+          "weighted avg": {
+            "precision": 0.9472815638124943,
+            "recall": 0.8241206030150754,
+            "f1-score": 0.866342905329651,
+            "support": 199.0
+          }
+        },
+        "labels": [
+          "beauty_fashion",
+          "crypto",
+          "education_parenting",
+          "fintech",
+          "fitness",
+          "gaming",
+          "lifestyle",
+          "technology",
+          "other"
+        ],
+        "confusion": [
+          [
+            22,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            19,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            25,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            14,
+            0,
+            0,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            17,
+            0,
+            1,
+            0,
+            5
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            19,
+            0,
+            0,
+            6
+          ],
+          [
+            0,
+            0,
+            3,
+            0,
+            0,
+            0,
+            21,
+            0,
+            9
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            23,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            4
+          ]
+        ]
+      },
+      "sweep": [
+        {
+          "threshold": 0.2,
+          "accuracy": 0.889,
+          "coverage": 0.995
+        },
+        {
+          "threshold": 0.25,
+          "accuracy": 0.879,
+          "coverage": 0.93
+        },
+        {
+          "threshold": 0.3,
+          "accuracy": 0.824,
+          "coverage": 0.839
+        },
+        {
+          "threshold": 0.35,
+          "accuracy": 0.799,
+          "coverage": 0.799
+        },
+        {
+          "threshold": 0.4,
+          "accuracy": 0.734,
+          "coverage": 0.729
+        },
+        {
+          "threshold": 0.5,
+          "accuracy": 0.628,
+          "coverage": 0.613
+        }
+      ]
+    },
+    "hybrid_tfidf_plus_rules": {
+      "gold": {
+        "n": 199,
+        "accuracy": 0.894,
+        "report": {
+          "beauty_fashion": {
+            "precision": 0.9583333333333334,
+            "recall": 1.0,
+            "f1-score": 0.9787234042553191,
+            "support": 23.0
+          },
+          "crypto": {
+            "precision": 0.7307692307692307,
+            "recall": 0.95,
+            "f1-score": 0.8260869565217391,
+            "support": 20.0
+          },
+          "education_parenting": {
+            "precision": 0.8333333333333334,
+            "recall": 0.7692307692307693,
+            "f1-score": 0.8,
+            "support": 26.0
+          },
+          "fintech": {
+            "precision": 0.8421052631578947,
+            "recall": 0.8888888888888888,
+            "f1-score": 0.8648648648648649,
+            "support": 18.0
+          },
+          "fitness": {
+            "precision": 1.0,
+            "recall": 0.875,
+            "f1-score": 0.9333333333333333,
+            "support": 24.0
+          },
+          "gaming": {
+            "precision": 1.0,
+            "recall": 0.96,
+            "f1-score": 0.9795918367346939,
+            "support": 25.0
+          },
+          "lifestyle": {
+            "precision": 0.9333333333333333,
+            "recall": 0.8484848484848485,
+            "f1-score": 0.8888888888888888,
+            "support": 33.0
+          },
+          "technology": {
+            "precision": 0.9615384615384616,
+            "recall": 0.9615384615384616,
+            "f1-score": 0.9615384615384616,
+            "support": 26.0
+          },
+          "other": {
+            "precision": 0.4,
+            "recall": 0.5,
+            "f1-score": 0.4444444444444444,
+            "support": 4.0
+          },
+          "accuracy": 0.8944723618090452,
+          "macro avg": {
+            "precision": 0.8510458839406208,
+            "recall": 0.8614603297936632,
+            "f1-score": 0.853052465620194,
+            "support": 199.0
+          },
+          "weighted avg": {
+            "precision": 0.9039277019374876,
+            "recall": 0.8944723618090452,
+            "f1-score": 0.8964866935947393,
+            "support": 199.0
+          }
+        },
+        "labels": [
+          "beauty_fashion",
+          "crypto",
+          "education_parenting",
+          "fintech",
+          "fitness",
+          "gaming",
+          "lifestyle",
+          "technology",
+          "other"
+        ],
+        "confusion": [
+          [
+            23,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            19,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            20,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          [
+            0,
+            2,
+            0,
+            16,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            21,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            24,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            4,
+            0,
+            0,
+            0,
+            28,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            25,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            2
+          ]
+        ]
+      },
+      "sweep": [
+        {
+          "threshold": 0.2,
+          "accuracy": 0.889,
+          "coverage": 0.995
+        },
+        {
+          "threshold": 0.25,
+          "accuracy": 0.889,
+          "coverage": 0.99
+        },
+        {
+          "threshold": 0.3,
+          "accuracy": 0.894,
+          "coverage": 0.975
+        },
+        {
+          "threshold": 0.35,
+          "accuracy": 0.869,
+          "coverage": 0.94
+        },
+        {
+          "threshold": 0.4,
+          "accuracy": 0.839,
+          "coverage": 0.894
+        },
+        {
+          "threshold": 0.5,
+          "accuracy": 0.739,
+          "coverage": 0.764
+        }
+      ]
+    }
+  }
+}

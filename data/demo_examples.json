@@ -1,0 +1,772 @@
+{
+ "ask": [
+  {
+   "question": "Top 5 beauty or fashion creators by engagement",
+   "filter": {
+    "niches": [
+     "beauty_fashion"
+    ],
+    "status": "qualified",
+    "sort_by": "engagement_rate",
+    "limit": 5,
+    "explanation": "Filtering for beauty and fashion creators sorted by engagement rate with a limit of 5.",
+    "country": null,
+    "has_email": null,
+    "max_followers": null,
+    "min_authenticity": null,
+    "min_engagement": null,
+    "min_followers": null,
+    "text_contains": null
+   },
+   "total_matches": 16,
+   "results": [
+    {
+     "name": "TANISHA BEDI ",
+     "niche": "beauty_fashion",
+     "segment": "Skincare",
+     "status": "qualified",
+     "followers": 8070,
+     "engagement_rate": 4.31,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "tanisha.bedi01official@gmail.com",
+     "profile_url": "https://www.youtube.com/@tanniyoutube",
+     "reasons": []
+    },
+    {
+     "name": "Aayushhi Rana",
+     "niche": "beauty_fashion",
+     "segment": "Skincare",
+     "status": "qualified",
+     "followers": 49600,
+     "engagement_rate": 2.79,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "Not Found",
+     "profile_url": "https://www.youtube.com/@aayushhirana",
+     "reasons": []
+    },
+    {
+     "name": "Sangita's beauty Tips",
+     "niche": "beauty_fashion",
+     "segment": "Makeup",
+     "status": "qualified",
+     "followers": 98900,
+     "engagement_rate": 2.74,
+     "authenticity": 90,
+     "country": "IN",
+     "email": "sangitasbeautyips@gmail.com",
+     "profile_url": "https://www.youtube.com/@sangitasbeautytips3860",
+     "reasons": []
+    },
+    {
+     "name": "tuniaa___",
+     "niche": "beauty_fashion",
+     "segment": "Fashion & Styling",
+     "status": "qualified",
+     "followers": 68200,
+     "engagement_rate": 2.67,
+     "authenticity": 100,
+     "country": null,
+     "email": "Not Found",
+     "profile_url": "https://www.youtube.com/@tunia18",
+     "reasons": []
+    },
+    {
+     "name": "Hiteshi Dodiya",
+     "niche": "beauty_fashion",
+     "segment": "Skincare",
+     "status": "qualified",
+     "followers": 92700,
+     "engagement_rate": 2.6,
+     "authenticity": 100,
+     "country": null,
+     "email": "Not Found",
+     "profile_url": "https://www.youtube.com/@hiteshid",
+     "reasons": []
+    }
+   ]
+  },
+  {
+   "question": "Teachers or parenting creators with more than 20,000 followers and a public email",
+   "filter": {
+    "niches": [
+     "education_parenting"
+    ],
+    "status": "qualified",
+    "sort_by": "followers",
+    "limit": 10,
+    "explanation": "Filtering for education and parenting creators with at least 20,000 followers who have a public email address available.",
+    "country": null,
+    "has_email": true,
+    "max_followers": null,
+    "min_authenticity": null,
+    "min_engagement": null,
+    "min_followers": 20000,
+    "text_contains": null
+   },
+   "total_matches": 5,
+   "results": [
+    {
+     "name": "Amanda Monroe",
+     "niche": "education_parenting",
+     "segment": "Teachers & Educators",
+     "status": "qualified",
+     "followers": 86400,
+     "engagement_rate": 1.96,
+     "authenticity": 100,
+     "country": "US",
+     "email": "amandamonroeinfo@gmail.com",
+     "profile_url": "https://www.youtube.com/@amandamonroe",
+     "reasons": []
+    },
+    {
+     "name": "Consultant Nitu",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "status": "qualified",
+     "followers": 77400,
+     "engagement_rate": 1.63,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "cnts.g4@gmail.com",
+     "profile_url": "https://www.youtube.com/@consultantnitu",
+     "reasons": []
+    },
+    {
+     "name": "That girl",
+     "niche": "education_parenting",
+     "segment": "Teachers & Educators",
+     "status": "qualified",
+     "followers": 63500,
+     "engagement_rate": 2.25,
+     "authenticity": 100,
+     "country": null,
+     "email": "shikhagahlot20@gmail.com",
+     "profile_url": "https://www.youtube.com/@thatgirl5564",
+     "reasons": []
+    },
+    {
+     "name": "Central Board for Fixing Education",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "status": "qualified",
+     "followers": 53500,
+     "engagement_rate": 2.31,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "hi@stonepaperstories.com",
+     "profile_url": "https://www.youtube.com/@fixing.education",
+     "reasons": []
+    },
+    {
+     "name": "Teaching Subjects",
+     "niche": "education_parenting",
+     "segment": "Teachers & Educators",
+     "status": "qualified",
+     "followers": 30600,
+     "engagement_rate": 1.93,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "nikshiv24@gmail.com",
+     "profile_url": "https://www.youtube.com/@teachingsubjectsnikitatiwari",
+     "reasons": []
+    }
+   ]
+  },
+  {
+   "question": "Which crypto creators were rejected?",
+   "filter": {
+    "niches": [
+     "crypto"
+    ],
+    "status": "rejected",
+    "sort_by": "final_score",
+    "limit": 10,
+    "explanation": "Filtering for rejected creators within the crypto niche.",
+    "country": null,
+    "has_email": null,
+    "max_followers": null,
+    "min_authenticity": null,
+    "min_engagement": null,
+    "min_followers": null,
+    "text_contains": null
+   },
+   "total_matches": 339,
+   "results": [
+    {
+     "name": " Crypto ELI10",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 0,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "NG",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@cryptoeli10",
+     "reasons": [
+      "0 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "3rdeyeadvisors",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 0,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": null,
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@3rdeyeadvisors",
+     "reasons": [
+      "0 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "5 Minutes Engineering",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 874000,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "IN",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@5minutesengineering",
+     "reasons": [
+      "874,000 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "Abhishek Kar",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 2140000,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "IN",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@abhishekkar",
+     "reasons": [
+      "2,140,000 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "Ai Trading Bot",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 605,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "GB",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@oct24ai",
+     "reasons": [
+      "605 followers (range 5,000-100,000)",
+      "blocklisted terms: trading bot"
+     ]
+    },
+    {
+     "name": "Aism India",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 328000,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "IN",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@aismindiia",
+     "reasons": [
+      "328,000 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "Alak Trading",
+     "niche": "crypto",
+     "segment": "Security & Scam Awareness",
+     "status": "rejected",
+     "followers": 14400,
+     "engagement_rate": 2.07,
+     "authenticity": 100,
+     "country": "IN",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@alaktrading",
+     "reasons": [
+      "relevance 3 for 'Security & Scam Awareness' (min 6)",
+      "blocklisted terms: gambling"
+     ]
+    },
+    {
+     "name": "Albu Studio",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 32800,
+     "engagement_rate": 0.67,
+     "authenticity": 85,
+     "country": "BG",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@albustudio",
+     "reasons": [
+      "engagement 0.67% (min 1.5%)",
+      "relevance 3 for 'Blockchain Education' (min 6)",
+      "classifier says technology (0.40), crypto only 0.34"
+     ]
+    },
+    {
+     "name": "Aldaron Hardware",
+     "niche": "crypto",
+     "segment": "Security & Scam Awareness",
+     "status": "rejected",
+     "followers": 2140,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": "HK",
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@aldaronhardware",
+     "reasons": [
+      "2,140 followers (range 5,000-100,000)"
+     ]
+    },
+    {
+     "name": "All Facts in 60 seconds",
+     "niche": "crypto",
+     "segment": "Blockchain Education",
+     "status": "rejected",
+     "followers": 3,
+     "engagement_rate": null,
+     "authenticity": null,
+     "country": null,
+     "email": "Not enriched",
+     "profile_url": "https://www.youtube.com/@allfactsin60seconds",
+     "reasons": [
+      "3 followers (range 5,000-100,000)"
+     ]
+    }
+   ]
+  }
+ ],
+ "match": [
+  {
+   "brief": "EDXSO wants creators who influence how parents in Delhi NCR choose a school and judge teaching quality.",
+   "results": [
+    {
+     "channel_id": "UC7dQqf7JbzXK9Wm_LcddHuQ",
+     "name": "Central Board for Fixing Education",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "profile_url": "https://www.youtube.com/@fixing.education",
+     "followers": 53500,
+     "engagement_rate": 2.31,
+     "email": "hi@stonepaperstories.com",
+     "similarity": 0.8366,
+     "content_themes": [
+      "education system critique",
+      "homeschooling guidance",
+      "child agency",
+      "parenting strategies"
+     ]
+    },
+    {
+     "channel_id": "UC38j34Z3Z7jx7pNYbhu2Hdw",
+     "name": "tuniaa___",
+     "niche": "beauty_fashion",
+     "segment": "Fashion & Styling",
+     "profile_url": "https://www.youtube.com/@tunia18",
+     "followers": 68200,
+     "engagement_rate": 2.67,
+     "email": "Not Found",
+     "similarity": 0.8225,
+     "content_themes": [
+      "Fashion hauls",
+      "Fall outfit inspiration",
+      "Festive and traditional wear",
+      "Budget-friendly clothing"
+     ]
+    },
+    {
+     "channel_id": "UCWOnTNRIk67UMxdYuQFODyw",
+     "name": "Parenting Hacks with Meghna",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "profile_url": "https://www.youtube.com/@meghnamishra05",
+     "followers": 9170,
+     "engagement_rate": 3.43,
+     "email": "Not Found",
+     "similarity": 0.8225,
+     "content_themes": [
+      "Parenting tips",
+      "Child education",
+      "Lifestyle",
+      "Digital parenting"
+     ]
+    },
+    {
+     "channel_id": "UCijY7EXpCldOvBoQZVLc_bQ",
+     "name": "Dr. Blake Willard - Homeschool Coach",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "profile_url": "https://www.youtube.com/@homeschoolmasterygroup",
+     "followers": 6130,
+     "engagement_rate": 3.31,
+     "email": "Not Found",
+     "similarity": 0.8221,
+     "content_themes": [
+      "homeschool guidance",
+      "parenting advice",
+      "education strategy",
+      "family coaching"
+     ]
+    },
+    {
+     "channel_id": "UCgkIGCVtehamD_cKyBPIJ3Q",
+     "name": "SuperTeacher",
+     "niche": "education_parenting",
+     "segment": "Teachers & Educators",
+     "profile_url": "https://www.youtube.com/@superteacher-edureforms",
+     "followers": 16600,
+     "engagement_rate": 2.27,
+     "email": "Not Found",
+     "similarity": 0.8205,
+     "content_themes": [
+      "Teacher training",
+      "STEM education",
+      "Future-ready teaching methodologies",
+      "Educational workshops"
+     ]
+    },
+    {
+     "channel_id": "UCdWCUETikMdciJvx0CfazBg",
+     "name": "Dr Kratika Mohan",
+     "niche": "beauty_fashion",
+     "segment": "Skincare",
+     "profile_url": "https://www.youtube.com/@drkratikamohan",
+     "followers": 95700,
+     "engagement_rate": 2.18,
+     "email": "drkratikamohan@gmail.com",
+     "similarity": 0.8182,
+     "content_themes": [
+      "Skincare routines",
+      "Pharmacy product reviews",
+      "Hair growth treatments",
+      "Dermatology advice"
+     ]
+    },
+    {
+     "channel_id": "UCIUBtmnyXwF41Zazz3RSFfw",
+     "name": "That girl",
+     "niche": "education_parenting",
+     "segment": "Teachers & Educators",
+     "profile_url": "https://www.youtube.com/@thatgirl5564",
+     "followers": 63500,
+     "engagement_rate": 2.25,
+     "email": "shikhagahlot20@gmail.com",
+     "similarity": 0.812,
+     "content_themes": [
+      "teacher life",
+      "daily vlogs",
+      "outfit grwm",
+      "school reality"
+     ]
+    },
+    {
+     "channel_id": "UCTcnmlRDrVC6x5HASQd5Etw",
+     "name": "Cara Kuykens",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@carakuykens",
+     "followers": 65900,
+     "engagement_rate": 2.41,
+     "email": "Not Found",
+     "similarity": 0.8088,
+     "content_themes": [
+      "calisthenics and handstands",
+      "fitness tips and workouts",
+      "music and instruments",
+      "hobbies and vlogs"
+     ]
+    },
+    {
+     "channel_id": "UCgr_21II5W38vkUGcewuUuQ",
+     "name": "Arfa Karim (Mom)",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "profile_url": "https://www.youtube.com/@arfa_karim",
+     "followers": 16400,
+     "engagement_rate": 6.76,
+     "email": "Not Found",
+     "similarity": 0.8087,
+     "content_themes": [
+      "parenting and child development",
+      "school leadership and education",
+      "podcasts and interviews",
+      "mindset and personal growth"
+     ]
+    },
+    {
+     "channel_id": "UCpDMs8HQeHJUqiZLeCMlOEg",
+     "name": "DrAnkitDaral Psychiatrist ",
+     "niche": "education_parenting",
+     "segment": "Parents & Family",
+     "profile_url": "https://www.youtube.com/@drankitdaral",
+     "followers": 28900,
+     "engagement_rate": 2.22,
+     "email": "Not Found",
+     "similarity": 0.8065,
+     "content_themes": [
+      "Child and adolescent mental health",
+      "Parenting tips and habits",
+      "Psychology and personality tests",
+      "Mental health awareness"
+     ]
+    }
+   ]
+  },
+  {
+   "brief": "An affordable, sweat-proof wireless earbud brand for gym-goers and runners.",
+   "results": [
+    {
+     "channel_id": "UCTcnmlRDrVC6x5HASQd5Etw",
+     "name": "Cara Kuykens",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@carakuykens",
+     "followers": 65900,
+     "engagement_rate": 2.41,
+     "email": "Not Found",
+     "similarity": 0.8228,
+     "content_themes": [
+      "calisthenics and handstands",
+      "fitness tips and workouts",
+      "music and instruments",
+      "hobbies and vlogs"
+     ]
+    },
+    {
+     "channel_id": "UC8WTP_4pCxgQimy_a9In3zw",
+     "name": "House of Tech",
+     "niche": "technology",
+     "segment": "Smartphones & Gadgets",
+     "profile_url": "https://www.youtube.com/@houseoftechyt",
+     "followers": 47300,
+     "engagement_rate": 1.57,
+     "email": "Not Found",
+     "similarity": 0.8102,
+     "content_themes": [
+      "smartphones",
+      "gadgets and accessories",
+      "televisions",
+      "power banks"
+     ]
+    },
+    {
+     "channel_id": "UC2bOChyMPbhsyVLLb24NfnQ",
+     "name": "Military Calisthenics Workout",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@militarycalisthenicsworkout",
+     "followers": 11500,
+     "engagement_rate": 1.84,
+     "email": "Not Found",
+     "similarity": 0.8094,
+     "content_themes": [
+      "Military Calisthenics",
+      "Core Workouts",
+      "No Equipment Fitness",
+      "Full Body Transformation"
+     ]
+    },
+    {
+     "channel_id": "UCakfrdHa0lItW8e5qpZd5lA",
+     "name": "GadgetWiser",
+     "niche": "technology",
+     "segment": "Smartphones & Gadgets",
+     "profile_url": "https://www.youtube.com/@wisergadget",
+     "followers": 40900,
+     "engagement_rate": 3.51,
+     "email": "Not Found",
+     "similarity": 0.8086,
+     "content_themes": [
+      "Gadget reviews",
+      "Budget tech finds",
+      "Student gadgets",
+      "Online shopping finds"
+     ]
+    },
+    {
+     "channel_id": "UC1nm4xrRgYdarG85AEo3egA",
+     "name": "Jackson Carey | FitCircuits",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@fitcircuits",
+     "followers": 60400,
+     "engagement_rate": 1.69,
+     "email": "Not Found",
+     "similarity": 0.8067,
+     "content_themes": [
+      "Dumbbell strength workouts",
+      "Kettlebell workouts",
+      "HIIT and cardio",
+      "No-equipment home workouts"
+     ]
+    },
+    {
+     "channel_id": "UCf7sgl96yQX6u_MI7B8Y7mg",
+     "name": "Kenvin Fit",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@kenvinfit",
+     "followers": 10000,
+     "engagement_rate": 2.03,
+     "email": "Not Found",
+     "similarity": 0.805,
+     "content_themes": [
+      "building an aesthetic physique",
+      "practical nutrition",
+      "simple training",
+      "fat loss and muscle building"
+     ]
+    },
+    {
+     "channel_id": "UCZ1GM0Nlm8i12pZD99L7lmg",
+     "name": "Corrupt",
+     "niche": "technology",
+     "segment": "Laptops & Computing",
+     "profile_url": "https://www.youtube.com/@corruptx7",
+     "followers": 22300,
+     "engagement_rate": 1.91,
+     "email": "Not Found",
+     "similarity": 0.804,
+     "content_themes": [
+      "Tech",
+      "Budget Gear",
+      "Tips & Tricks",
+      "Gaming"
+     ]
+    },
+    {
+     "channel_id": "UCOShKrPP58ExuZ0c5-I7YFA",
+     "name": "R_fit",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@rj._.fit28",
+     "followers": 10900,
+     "engagement_rate": 4.33,
+     "email": "Not Found",
+     "similarity": 0.8035,
+     "content_themes": [
+      "calisthenics",
+      "weightlifting",
+      "mobility training",
+      "fitness journey"
+     ]
+    },
+    {
+     "channel_id": "UCOgufntEMEKpeNf0_Ishfeg",
+     "name": "Gourav Yadav",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@gouravyadav03",
+     "followers": 29900,
+     "engagement_rate": 3.47,
+     "email": "Not Found",
+     "similarity": 0.8014,
+     "content_themes": [
+      "fitness and workouts",
+      "Hyrox training",
+      "nutrition and diet",
+      "daily workout logs"
+     ]
+    },
+    {
+     "channel_id": "UCTqtg2ZVBSnMCz5llSQtkwQ",
+     "name": "Xin Chen",
+     "niche": "fitness",
+     "segment": "Strength & Gym Training",
+     "profile_url": "https://www.youtube.com/@xinchen9",
+     "followers": 34100,
+     "engagement_rate": 2.92,
+     "email": "Not Found",
+     "similarity": 0.7986,
+     "content_themes": [
+      "gym transformations",
+      "fitness journeys",
+      "meal prep",
+      "workout routines"
+     ]
+    }
+   ]
+  }
+ ],
+ "replies": [
+  {
+   "label": "Sample: Interested, asks about rate",
+   "reply": "Hi! Thanks for reaching out, this sounds interesting. What's the budget, and would it be a dedicated video or an integration? I usually charge Rs 15,000 for a 60-second integration. Also, can I see the product first?",
+   "result": {
+    "intent": "rate_negotiation",
+    "sentiment": "positive",
+    "summary": "The creator is interested in the partnership but has questions regarding the budget, deliverables, and product access. They have quoted a specific rate for an integration.",
+    "questions_asked": [
+     "What's the budget?",
+     "Would it be a dedicated video or an integration?",
+     "Can I see the product first?"
+    ],
+    "quoted_rate": "Rs 15,000 for a 60-second integration",
+    "next_action": "Acknowledge the interest and rate, then schedule a call to discuss deliverables and product details.",
+    "suggested_reply": "Hi! We are thrilled you are interested in partnering with EDXSO. Regarding your questions, we are open to discussing both dedicated videos and integrations depending on what best fits your content style. We would love to walk you through our teacher development programmes and share our product details during a brief call. I have noted your rate for our internal review. Are you available for a 15-minute call next week to discuss the scope and your availability further?",
+    "suppress": false
+   }
+  },
+  {
+   "label": "Sample: Not interested",
+   "reply": "Thanks, but I'm not taking brand collaborations right now. Please don't email me again.",
+   "result": {
+    "intent": "unsubscribe",
+    "sentiment": "negative",
+    "summary": "The creator declined the collaboration and requested to be removed from the mailing list.",
+    "questions_asked": [],
+    "quoted_rate": "",
+    "next_action": "Remove the creator from the outreach list and confirm the request.",
+    "suggested_reply": "Thank you for letting us know. We have updated our records and will ensure you are not contacted again regarding this partnership.",
+    "suppress": true
+   }
+  },
+  {
+   "label": "Sample: Out of office",
+   "reply": "I'm travelling until the 15th with limited access to email. I'll get back to you when I return.",
+   "result": {
+    "intent": "out_of_office",
+    "sentiment": "neutral",
+    "summary": "The creator is currently traveling and has limited email access until the 15th.",
+    "questions_asked": [],
+    "quoted_rate": "",
+    "next_action": "Set a reminder to follow up with the creator after the 15th.",
+    "suggested_reply": "",
+    "suppress": false
+   }
+  },
+  {
+   "label": "Sample: Needs more info",
+   "reply": "Hey, can you tell me more about who your audience is and what deliverables you're expecting? Is there a contract?",
+   "result": {
+    "intent": "needs_more_info",
+    "sentiment": "neutral",
+    "summary": "The creator is requesting clarification on the target audience, specific deliverables, and the contractual nature of the partnership.",
+    "questions_asked": [
+     "Who is your audience?",
+     "What deliverables are you expecting?",
+     "Is there a contract?"
+    ],
+    "quoted_rate": "",
+    "next_action": "Provide details on EDXSO's audience, typical deliverables, and confirm that a contract is standard practice.",
+    "suggested_reply": "Hi! Thanks for your interest. Our audience consists of K-12 educators, school leaders, and administrators looking to improve institutional excellence. Regarding deliverables, we typically look for co-created content that highlights our teacher development and data-driven tech integration. We do use a standard partnership agreement for all collaborations. I would love to discuss the specifics with you on a brief call to see if our goals align. Are you available for a fifteen-minute chat next week to go over these details?",
+    "suppress": false
+   }
+  }
+ ]
+}

@@ -28,6 +28,12 @@ SCHEMA = {
 }
 
 
+def schema_for(campaign: dict) -> dict:
+    """The angle is an enum of the campaign's allowed angles, so the model cannot return a free-text variant."""
+    props = {**SCHEMA["properties"], "collaboration_angle": {"type": "STRING", "enum": campaign["collaboration_angles"]}}
+    return {**SCHEMA, "properties": props}
+
+
 def system_prompt(campaign: dict, sender: str) -> str:
     b = campaign["brand"]
     return f"""You write creator-partnership outreach for {b['name']}.
@@ -36,11 +42,11 @@ What creators get: {'; '.join(b['creator_value'])}.
 
 Write like a thoughtful human partnerships manager, not a marketer. Rules:
 - greeting_name: the creator's first name if the channel name clearly contains a person's name, else the channel name.
-- email_body: 60-90 words TOTAL, including the greeting line and the sign-off "{sender}". Plain text, no emojis, no links.
+- email_body: aim for 70-80 words (hard limits 60-90) TOTAL, including the greeting line and the sign-off "{sender}". Plain text, no emojis, no links.
   It must (1) open by referencing ONE specific recent video by its title or a concrete theme, in your own words,
   (2) say why their audience matters to {b['name']}, (3) propose the given collaboration angle concretely,
   (4) state what is in it for the creator, (5) end with a low-pressure ask (e.g. a 15-minute call).
-- instagram_dm: 15-30 words, casual and warm, one specific content reference, the angle in a few words, no links,
+- instagram_dm: aim for 20-25 words (hard limits 15-30), casual and warm, one specific content reference, the angle in a few words, no links,
   at most one emoji. It must NOT reuse the email's opening sentence. Open with the creator's name or straight
   into their specific video/topic, never with a generic "Hello!", "Hi!", "Hey!", "Loved your" or "Love your".
 - email_subject: under 9 words, specific to the creator, no clickbait.
@@ -128,7 +134,7 @@ def personalize(rec: dict, campaign: dict, sender: str, attempts: int = 3, avoid
                 angles_used: dict | None = None) -> dict:
     feedback, msg = None, None
     for attempt in range(1, attempts + 1):
-        msg = llm.generate_json(system_prompt(campaign, sender), user_prompt(rec, campaign, feedback, avoid, angles_used), SCHEMA,
+        msg = llm.generate_json(system_prompt(campaign, sender), user_prompt(rec, campaign, feedback, avoid, angles_used), schema_for(campaign),
                                 temperature=0.9)
         feedback = validate(msg, rec, campaign)
         if not feedback:

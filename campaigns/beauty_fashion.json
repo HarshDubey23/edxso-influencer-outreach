@@ -1,0 +1,28 @@
+{
+  "id": "beauty-fashion-2026",
+  "niche": "beauty_fashion",
+  "name": "Dewdrape x Beauty & Fashion creators",
+  "brand": {
+    "name": "Dewdrape",
+    "demo_brand": true,
+    "about": "Dewdrape (fictional demo brand) sells clean, fragrance-free skincare for Indian skin and a small line of sustainable everyday ethnic wear.",
+    "creator_value": ["paid collaboration (fee discussed on a call)", "a full product kit to keep",
+                      "an exclusive discount code for their audience", "a feature on the brand's channels"]
+  },
+  "discovery": {"queries": ["skincare routine indian skin", "affordable makeup india", "fashion haul india",
+                            "ethnic wear styling", "hair care routine india", "sustainable fashion india"]},
+  "segments": {
+    "skincare": {"label": "Skincare", "fit_weight": 1.0,
+      "keywords": ["skincare", "skin care", "sunscreen", "serum", "moisturizer", "acne", "glowing skin", "niacinamide", "spf", "pigmentation", "routine"],
+      "angle_hint": "UGC content: honest 4-week skincare review."},
+    "makeup": {"label": "Makeup", "fit_weight": 0.9,
+      "keywords": ["makeup", "make up", "lipstick", "foundation", "kajal", "eyeliner", "blush", "grwm", "get ready with me"],
+      "angle_hint": "Paid product placement in a GRWM video."},
+    "fashion_styling": {"label": "Fashion & Styling", "fit_weight": 1.0,
+      "keywords": ["fashion", "outfit", "styling", "haul", "kurti", "saree", "ethnic wear", "lookbook", "wardrobe", "meesho haul", "myntra"],
+      "angle_hint": "Sponsored styling video: three ways to wear the ethnic-wear line."},
+    "haircare": {"label": "Hair Care", "fit_weight": 0.8,
+      "keywords": ["hair care", "haircare", "hair fall", "hair growth", "shampoo", "hair oil", "hairstyle"],
+      "angle_hint": "Barter collaboration: product kit in exchange for an honest routine video."}
+  }
+}

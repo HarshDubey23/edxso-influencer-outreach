@@ -1,0 +1,32 @@
+{
+  "id": "crypto-2026",
+  "niche": "crypto",
+  "name": "BlockSchool x Crypto & Web3 educators",
+  "brand": {
+    "name": "BlockSchool",
+    "demo_brand": true,
+    "about": "BlockSchool (fictional demo brand) runs beginner courses on how blockchains work, wallet security and scam awareness. It does not sell tokens, give trading signals or promise returns.",
+    "creator_value": ["paid sponsorship (fee discussed on a call)", "free course access for their community",
+                      "a revenue share on course sign-ups", "a guest-instructor slot"]
+  },
+  "discovery": {"queries": ["crypto explained for beginners hindi", "blockchain technology explained", "crypto wallet security",
+                            "web3 for beginners", "bitcoin explained india", "crypto tax india",
+                            "how blockchain works simple", "crypto scams to avoid", "ethereum explained hindi",
+                            "defi explained beginners", "cold wallet setup", "crypto regulation india"]},
+  "filters": {"min_engagement_rate": 1.5,
+              "brand_safety_extra": ["signals", "airdrop", "1000x", "free crypto", "trading bot", "pump", "giveaway", "presale", "memecoin"]},
+  "segments": {
+    "blockchain_education": {"label": "Blockchain Education", "fit_weight": 1.0,
+      "keywords": ["blockchain", "web3", "how crypto works", "ethereum", "smart contract", "defi", "explained", "decentralized"],
+      "angle_hint": "Sponsored explainer video co-created with BlockSchool's instructors."},
+    "security_scams": {"label": "Security & Scam Awareness", "fit_weight": 1.0,
+      "keywords": ["scam", "security", "wallet", "seed phrase", "hack", "safe", "fraud", "phishing"],
+      "angle_hint": "Brand ambassador for a scam-awareness series."},
+    "crypto_news_markets": {"label": "Crypto News & Markets", "fit_weight": 0.5,
+      "keywords": ["bitcoin", "btc", "price prediction", "crypto news", "altcoin", "market update", "bull run"],
+      "angle_hint": "Affiliate campaign for the beginner course (education only, no price talk)."},
+    "crypto_tax_regulation": {"label": "Tax & Regulation", "fit_weight": 0.9,
+      "keywords": ["crypto tax", "tds", "regulation", "rbi", "sebi", "legal", "itr"],
+      "angle_hint": "Paid placement in a crypto-tax explainer."}
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "technology-2026",
+  "niche": "technology",
+  "name": "Voltnest x Tech creators",
+  "brand": {
+    "name": "Voltnest",
+    "demo_brand": true,
+    "about": "Voltnest (fictional demo brand) makes GaN fast chargers, power banks and smart plugs designed and tested for Indian power conditions.",
+    "creator_value": ["paid collaboration (fee discussed on a call)", "review units to keep",
+                      "an affiliate commission code", "early access to unreleased products"]
+  },
+  "discovery": {"queries": ["smartphone review hindi", "tech unboxing india", "best gadgets under 1000",
+                            "laptop buying guide india", "smart home setup india", "ai tools tutorial hindi",
+                            "best earbuds under 2000", "power bank review india", "android tips and tricks hindi",
+                            "desk setup india budget", "smartwatch review india", "fast charger test"]},
+  "segments": {
+    "smartphones_gadgets": {"label": "Smartphones & Gadgets", "fit_weight": 1.0,
+      "keywords": ["smartphone", "phone review", "unboxing", "gadget", "gadgets", "earbuds", "smartwatch", "charger", "power bank", "camera test"],
+      "angle_hint": "Paid product placement: charging test in a phone review."},
+    "computing": {"label": "Laptops & Computing", "fit_weight": 0.9,
+      "keywords": ["laptop", "pc build", "windows", "macbook", "processor", "ssd", "monitor"],
+      "angle_hint": "Sponsored desk-setup video with GaN charger."},
+    "smart_home": {"label": "Smart Home & IoT", "fit_weight": 1.0,
+      "keywords": ["smart home", "alexa", "smart plug", "iot", "automation", "home automation", "wifi"],
+      "angle_hint": "UGC content: smart-plug automation walkthrough."},
+    "software_ai": {"label": "Software & AI Tools", "fit_weight": 0.7,
+      "keywords": ["ai tools", "chatgpt", "app review", "software", "tutorial", "coding", "productivity apps", "android tips"],
+      "angle_hint": "Affiliate campaign in a productivity-setup video."}
+  }
+}

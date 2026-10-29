@@ -88,6 +88,46 @@ class Classification(unittest.TestCase):
         self.assertEqual(r["reasons"][0], "subscriber count is hidden")
 
 
+class Authenticity(unittest.TestCase):
+    def test_healthy_audience_scores_full(self):
+        from outreach.authenticity import score
+        vids = [video(f"t{i}", 10 + i, views=3000, likes=120, comments=20) for i in range(5)]
+        s = score(record(followers=20000, videos=vids), 0.04)
+        self.assertEqual((s["authenticity"], s["authenticity_flags"], s["median_views"]), (100, [], 3000))
+
+    def test_inflated_audience_and_bot_likes_flagged(self):
+        from outreach.authenticity import score
+        vids = [video(f"t{i}", 10 + i, views=100, likes=60, comments=0) for i in range(5)]  # 0.1% reach, 60% like rate
+        s = score(record(followers=90000, videos=vids), 0.04)
+        self.assertLess(s["authenticity"], 40)
+        self.assertEqual(len(s["authenticity_flags"]), 2)
+        self.assertIn("reaches only", s["authenticity_flags"][0])
+
+    def test_too_little_data_is_not_scored(self):
+        from outreach.authenticity import score
+        self.assertIsNone(score(record(videos=[video("a", 5)]), 0.04)["authenticity"])
+
+
+class HybridClassifier(unittest.TestCase):
+    def test_blend_and_abstain(self):
+        from outreach import ml
+        model = {"fitness": 0.5, "gaming": 0.5}
+        self.assertEqual(ml.blend(model, {"fitness": 1.0}), {"fitness": 0.75, "gaming": 0.25})
+        self.assertEqual(ml.blend(model, {}), model)  # no keyword evidence: model alone
+        self.assertEqual(ml.decide({"fitness": 0.75, "gaming": 0.25}), "fitness")
+        self.assertEqual(ml.decide({"fitness": 0.2, "gaming": 0.18}), "other")  # below threshold: abstain
+        self.assertEqual(ml.decide({}), "other")
+
+
+class PublicSite(unittest.TestCase):
+    def test_email_masking(self):
+        from outreach.export import _mask
+        self.assertEqual(_mask("priya.t@gmail.com"), "pr*****@gmail.com")
+        self.assertEqual(_mask("ab@x.in"), "ab***@x.in")
+        self.assertEqual(_mask("Not Found"), "Not Found")
+        self.assertIsNone(_mask(None))
+
+
 class Enrichment(unittest.TestCase):
     def test_email_extraction(self):
         text = "Biz: Priya.T@gmail.com, also priya [at] priyateaches [dot] in. logo@2x.png you@example.com PRIYA.T@GMAIL.COM"
@@ -196,6 +236,25 @@ class Sending(unittest.TestCase):
         self.assertEqual((s1["failed"], s2["duplicates_skipped"]), (1, 2))  # A, and C (same inbox as A)
         row = self.db.execute("SELECT status, delivered_to FROM outreach_log WHERE kind='email'").fetchone()
         self.assertEqual(tuple(row), ("unconfirmed", "me@x.com"))
+
+    def test_do_not_contact_list_blocks_send(self):
+        self.db.execute("INSERT INTO suppression (email, reason, created_at) VALUES ('a@x.com', 'unsubscribe', 'now')")
+        s = self.send()
+        self.assertEqual(s["sent"], 0)
+        self.assertEqual(self.db.execute("SELECT COUNT(*) FROM outreach_log WHERE kind='email'").fetchone()[0], 0)
+
+    def test_followup_only_when_due_once_and_not_after_reply(self):
+        self.msgs.append({**self.msgs[0], "channel_id": "UC5", "influencer": "E", "email": "e@x.com"})
+        self.send()
+        out = Path(self.tmp.name) / "outbox"
+        fu = lambda **kw: sender.followups(CAMPAIGN, self.msgs, db=self.db, outbox=out,
+                                           writer=lambda m: "Just following up on my note.", **kw)
+        self.assertEqual(fu()["followups_sent"], 0)  # not due yet
+        self.db.execute("UPDATE outreach_log SET created_at='2020-01-01T00:00:00+00:00' WHERE kind='email'")
+        self.db.execute("INSERT INTO replies (campaign_id, channel_id, email, intent, created_at) "
+                        "VALUES (?, 'UC5', 'e@x.com', 'interested', 'now')", (CAMPAIGN["id"],))
+        self.assertEqual(fu()["followups_sent"], 1)  # A only: E already replied
+        self.assertEqual(fu()["followups_sent"], 0)  # never twice
 
     def test_manual_dm_flow(self):
         self.send()

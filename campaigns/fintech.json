@@ -1,0 +1,31 @@
+{
+  "id": "fintech-2026",
+  "niche": "fintech",
+  "name": "PaisaPilot x Personal-finance creators",
+  "brand": {
+    "name": "PaisaPilot",
+    "demo_brand": true,
+    "about": "PaisaPilot (fictional demo brand) is a budgeting and goal-saving app that helps first-jobbers in India track spending and automate monthly savings. It gives no stock tips and promises no returns.",
+    "creator_value": ["paid sponsorship (fee discussed on a call)", "a referral bonus for every verified sign-up",
+                      "early access to new features for their audience", "co-hosted money-habit challenges"]
+  },
+  "discovery": {"queries": ["personal finance india", "budgeting tips for salaried", "how to save money india",
+                            "mutual funds explained beginners", "credit card tips india", "financial literacy hindi",
+                            "50 30 20 rule india", "income tax saving tips salaried", "sip for beginners hindi",
+                            "money mistakes in 20s india", "emergency fund india", "upi and digital payments explained"]},
+  "filters": {"brand_safety_extra": ["intraday tips", "jackpot", "sure shot", "loan app", "double your money", "stock tips"]},
+  "segments": {
+    "budgeting_saving": {"label": "Budgeting & Saving", "fit_weight": 1.0,
+      "keywords": ["budget", "budgeting", "save money", "saving", "expenses", "salary", "emergency fund", "frugal", "money management"],
+      "angle_hint": "Sponsored 'my monthly budget' video built around the app, with a referral link."},
+    "investing_basics": {"label": "Investing Basics", "fit_weight": 0.8,
+      "keywords": ["mutual fund", "sip", "index fund", "investing", "investment", "portfolio", "stock market", "nifty"],
+      "angle_hint": "Paid product placement: tracking SIP goals inside the app (no investment advice)."},
+    "credit_banking": {"label": "Credit & Banking", "fit_weight": 0.9,
+      "keywords": ["credit card", "credit score", "cibil", "bank account", "upi", "loan", "emi", "insurance", "tax"],
+      "angle_hint": "Affiliate campaign around a 'stop overspending on cards' series."},
+    "financial_literacy": {"label": "Financial Literacy", "fit_weight": 1.0,
+      "keywords": ["financial literacy", "personal finance", "money", "finance", "financial freedom", "wealth", "financial planning"],
+      "angle_hint": "Brand ambassador for a 30-day money-habits challenge."}
+  }
+}

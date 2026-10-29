@@ -34,7 +34,15 @@ CREATE UNIQUE INDEX IF NOT EXISTS one_per_creator ON outreach_log(campaign_id, k
   WHERE status != 'failed';
 CREATE UNIQUE INDEX IF NOT EXISTS one_per_email ON outreach_log(campaign_id, kind, mode, email)
   WHERE status != 'failed' AND email IS NOT NULL;
+CREATE TABLE IF NOT EXISTS replies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, campaign_id TEXT NOT NULL, channel_id TEXT NOT NULL, email TEXT,
+  intent TEXT NOT NULL, summary TEXT, body TEXT, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS suppression (  -- do-not-contact list, checked before every send in every campaign
+  email TEXT PRIMARY KEY, reason TEXT, created_at TEXT NOT NULL
+);
 """
+SENT_OK = ("simulated", "test_sent", "sent")
 
 
 def connect(path=None) -> sqlite3.Connection:
@@ -123,26 +131,50 @@ def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-ru
         print(f"  skip {m['influencer']}: {why}")
 
     todo, batch_emails = [], set()
+    blocked = suppressed(db)
     for m in ok:
-        if m["email"] in batch_emails or already_contacted(db, cid, "email", mode, m["channel_id"], m["email"]):
+        if m["email"] in blocked:
+            stats["ineligible"] += 1
+            print(f"  skip {m['influencer']}: on do-not-contact list")
+        elif m["email"] in batch_emails or already_contacted(db, cid, "email", mode, m["channel_id"], m["email"]):
             stats["duplicates_skipped"] += 1
             print(f"  skip {m['influencer']}: already contacted in {mode} mode (duplicate prevented)")
         else:
             todo.append(m)
             batch_emails.add(m["email"])
     todo = todo[:limit] if limit else todo
+    sent, failed = _deliver(db, cid, todo, mode, transport, "email", test_to, outbox)
+    stats["sent"], stats["failed"] = sent, failed
 
+    # Instagram DMs: manual workflow only (queue once per creator).
+    by_id = {r["channel_id"]: r for r in enriched}
+    for m in messages:
+        if m.get("review_status") == "approved" and not already_contacted(db, cid, "instagram_dm", "manual", m["channel_id"], None):
+            ig = by_id.get(m["channel_id"], {}).get("socials", {}).get("instagram")
+            log(db, campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"], email=None,
+                kind="instagram_dm", mode="manual", status="dm_queued_manual",
+                delivered_to=ig or "Instagram not linked publicly", transport="manual")
+            stats["dms_queued"] += 1
+    print(f"Sending ({mode}): {stats}")
+    return stats
+
+
+def suppressed(db) -> set[str]:
+    return {r["email"] for r in db.execute("SELECT email FROM suppression")}
+
+
+def _deliver(db, cid, todo, mode, transport, kind, test_to, outbox) -> tuple[int, int]:
     outbox = outbox or OUTPUT / "outbox"
     outbox.mkdir(parents=True, exist_ok=True)
     done = "simulated" if mode == "dry-run" else "test_sent" if mode == "test" else "sent"
-    emails, rowids = {}, {}
+    emails, rowids, sent, failed = {}, {}, 0, 0
     # Write-ahead: a 'sending' row exists before anything leaves the machine. If the process dies mid-send,
     # that row (status != 'failed') blocks a resend on the next run instead of silently emailing twice.
     for m in todo:
         to = test_to or m["email"]
         emails[m["channel_id"]] = em = build_email(m, to, m["email"], mode)
         rowids[m["channel_id"]] = log(db, campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"],
-                                      email=m["email"], kind="email", mode=mode, status="sending",
+                                      email=m["email"], kind=kind, mode=mode, status="sending",
                                       subject=em["Subject"], delivered_to=to,
                                       transport="none" if mode == "dry-run" else transport)
 
@@ -160,7 +192,7 @@ def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-ru
         em, fields = emails[m["channel_id"]], {}
         try:
             if mode == "dry-run":
-                (outbox / f"{m['channel_id']}.eml").write_bytes(bytes(em))
+                (outbox / f"{m['channel_id']}{'' if kind == 'email' else '.' + kind}.eml").write_bytes(bytes(em))
                 fields = dict(status=done, provider_id=em["Message-ID"])
             elif transport == "n8n":
                 res = n8n_results.get(m["channel_id"], {"status": "failed", "error": "n8n returned no result for this email"})
@@ -171,20 +203,55 @@ def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-ru
                 fields = dict(status=done, provider_id=send_smtp(em))
         except Exception as e:  # one bad send must not abort the batch; it is logged and retryable
             fields = dict(status="failed", error=str(e)[:500])
-        stats["sent" if fields["status"] == done else "failed"] += 1
+        if fields["status"] == done:
+            sent += 1
+        else:
+            failed += 1
         update(db, rowids[m["channel_id"]], **fields)
-        print(f"  {fields['status']:<11} {m['influencer']} -> {em['To']}")
+        print(f"  {fields['status']:<11} {kind:<14} {m['influencer']} -> {em['To']}")
+    return sent, failed
 
-    # Instagram DMs: manual workflow only (queue once per creator).
-    by_id = {r["channel_id"]: r for r in enriched}
-    for m in messages:
-        if m.get("review_status") == "approved" and not already_contacted(db, cid, "instagram_dm", "manual", m["channel_id"], None):
-            ig = by_id.get(m["channel_id"], {}).get("socials", {}).get("instagram")
-            log(db, campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"], email=None,
-                kind="instagram_dm", mode="manual", status="dm_queued_manual",
-                delivered_to=ig or "Instagram not linked publicly", transport="manual")
-            stats["dms_queued"] += 1
-    print(f"Sending ({mode}): {stats}")
+
+FOLLOWUP_SCHEMA = {"type": "OBJECT", "properties": {"body": {"type": "STRING"}}, "required": ["body"]}
+
+
+def write_followup(m: dict) -> str:
+    from . import llm
+    out = llm.generate_json(
+        "Write a short, polite follow-up to an unanswered creator-partnership email. 35-60 words, plain text, "
+        "no guilt-tripping, mention one concrete detail from the original, offer an easy out, same sign-off as the original.",
+        f"Original email:\n{m['email_body']}", FOLLOWUP_SCHEMA, temperature=0.7)
+    return out["body"]
+
+
+def followups(campaign: dict, messages: list[dict], mode="dry-run", transport="smtp", days=4, limit=None,
+              db=None, outbox=None, writer=write_followup) -> dict:
+    """Step 2 of the sequence: one follow-up after `days` with no reply, never to suppressed or replied creators."""
+    if mode == "live":
+        raise SystemExit("Live follow-ups are disabled in this prototype.")
+    db = db or connect()
+    cid = campaign["id"]
+    test_to = env("TEST_RECIPIENT") if mode == "test" else None
+    cutoff = datetime.now(timezone.utc).timestamp() - days * 86400
+    replied = {r["channel_id"] for r in db.execute("SELECT channel_id FROM replies WHERE campaign_id=?", (cid,))}
+    blocked, by_id = suppressed(db), {m["channel_id"]: m for m in messages}
+    todo, skipped = [], 0
+    for r in db.execute(f"SELECT * FROM outreach_log WHERE campaign_id=? AND kind='email' AND mode=? AND status IN "
+                        f"({','.join('?' * len(SENT_OK))})", (cid, mode, *SENT_OK)):
+        m = by_id.get(r["channel_id"])
+        if (not m or r["channel_id"] in replied or r["email"] in blocked
+                or datetime.fromisoformat(r["created_at"]).timestamp() > cutoff
+                or already_contacted(db, cid, "email_followup", mode, r["channel_id"], r["email"])):
+            skipped += 1
+            continue
+        try:
+            todo.append({**m, "email_subject": f"Re: {m['email_subject']}", "email_body": writer(m)})
+        except Exception as e:  # a failed draft skips this creator, never the batch
+            print(f"  ! follow-up not drafted for {m['influencer']}: {e}")
+    todo = todo[:limit] if limit else todo
+    sent, failed = _deliver(db, cid, todo, mode, transport, "email_followup", test_to, outbox)
+    stats = {"followups_sent": sent, "failed": failed, "not_due_or_skipped": skipped}
+    print(f"Follow-ups ({mode}, after {days} days): {stats}")
     return stats
 
 

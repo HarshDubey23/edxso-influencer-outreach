@@ -6,6 +6,7 @@ Segment = the brand-fit audience segment with the strongest keyword evidence.
 """
 import re
 
+from . import authenticity
 from .config import save_stage
 
 
@@ -27,7 +28,7 @@ def relevance(rec: dict, segments: dict) -> dict[str, float]:
     return scores
 
 
-def classify(rec: dict, campaign: dict) -> dict:
+def classify(rec: dict, campaign: dict, ctx: dict | None = None) -> dict:
     f, segments = campaign["filters"], campaign["segments"]
     checks = {}
 
@@ -61,6 +62,19 @@ def classify(rec: dict, campaign: dict) -> dict:
         check("niche_relevance", rel >= f["min_relevance"],
               f"relevance {rel:g} for '{segments[seg]['label']}' (min {f['min_relevance']})")
 
+    from . import ml  # lazy: ml imports this module
+    pred = ml.predict(rec) if rec["recent_videos"] else {"ml_niche": None, "ml_confidence": None, "ml_probs": {}}
+    if pred["ml_probs"]:
+        own = pred["ml_probs"].get(campaign["niche"], 0.0)
+        check("ml_niche_agreement", own >= f["min_ml_confidence"],
+              f"classifier: {campaign['niche']} {own:.2f}" if own >= f["min_ml_confidence"] else
+              f"classifier says {pred['ml_niche']} ({pred['ml_confidence']:.2f}), {campaign['niche']} only {own:.2f}")
+
+    auth = authenticity.score(rec, (ctx or {}).get("niche_like_rate"))
+    if checks["followers"]["passed"] and auth["authenticity"] is not None:
+        check("audience_authenticity", auth["authenticity"] >= f["min_authenticity"],
+              f"authenticity {auth['authenticity']}/100" + (f": {'; '.join(auth['authenticity_flags'])}" if auth["authenticity_flags"] else ""))
+
     if f.get("exclude_made_for_kids"):
         check("audience_not_children", not rec["made_for_kids"],
               "channel is 'made for kids' (audience is children, not parents/educators)" if rec["made_for_kids"]
@@ -80,11 +94,11 @@ def classify(rec: dict, campaign: dict) -> dict:
     # Fit score (0-100) ranks the shortlist; it never overrides a failed hard check.
     fit = 0.0
     if qualified:
-        fit = (40 * min(rel / 10, 1) + 25 * min((er or 0) / 6, 1)
-               + 15 * min((rec["views_to_followers"] or 0) / 40, 1)
-               + 10 * segments[seg]["fit_weight"] + 10 * geo_pref)
+        fit = (25 * min(rel / 10, 1) + 15 * (pred["ml_probs"].get(campaign["niche"], 0.5) if pred["ml_probs"] else 0.5)
+               + 20 * min((er or 0) / 6, 1) + 10 * min((rec["views_to_followers"] or 0) / 40, 1)
+               + 10 * (auth["authenticity"] or 50) / 100 + 10 * segments[seg]["fit_weight"] + 10 * geo_pref)
 
-    return {**rec,
+    return {**rec, **pred, **auth,
             "status": "qualified" if qualified else "rejected",
             "segment": seg,
             "segment_label": segments[seg]["label"],
@@ -96,7 +110,8 @@ def classify(rec: dict, campaign: dict) -> dict:
 
 
 def run(campaign: dict, discovered: list[dict]) -> list[dict]:
-    out = sorted((classify(r, campaign) for r in discovered),
+    ctx = {"niche_like_rate": authenticity.niche_like_rate(discovered)}
+    out = sorted((classify(r, campaign, ctx) for r in discovered),
                  key=lambda r: (r["status"] != "qualified", -r["fit_score"], r["name"].lower()))
     save_stage(campaign, "classified", out)
     q = sum(r["status"] == "qualified" for r in out)

@@ -1,0 +1,7 @@
+# The discovery -> sending pipeline is Python standard library only.
+# These power the ML classifier and the API/dashboard. scikit-learn is pinned to the version
+# models/niche_classifier.joblib was trained with (pickled models are version-specific).
+scikit-learn==1.9.1
+joblib==1.6.0
+fastapi==0.141.1
+uvicorn==0.52.4

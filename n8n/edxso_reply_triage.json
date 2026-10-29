@@ -1,0 +1,197 @@
+{
+ "name": "EDXSO Reply Triage",
+ "nodes": [
+  {
+   "id": "cdcdc08b-fc33-4092-9843-5321434f1f1e",
+   "name": "Creator reply received",
+   "type": "n8n-nodes-base.gmailTrigger",
+   "typeVersion": 1.4,
+   "position": [
+    0,
+    112
+   ],
+   "parameters": {
+    "pollTimes": {
+     "item": [
+      {
+       "mode": "everyMinute"
+      }
+     ]
+    },
+    "simple": false,
+    "maxResults": 10,
+    "filters": {
+     "q": "in:inbox subject:\"[TEST ->\" -from:me newer_than:14d",
+     "readStatus": "unread"
+    }
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "",
+     "name": "Gmail account"
+    }
+   }
+  },
+  {
+   "id": "bdb8129f-1b43-4963-8fa6-32cbb6f4f6be",
+   "name": "Triage reply with Gemini",
+   "type": "@n8n/n8n-nodes-langchain.chainLlm",
+   "typeVersion": 1.9,
+   "position": [
+    224,
+    112
+   ],
+   "parameters": {
+    "promptType": "define",
+    "text": "=From: {{ $json.from.value[0].address }}\nSubject: {{ $json.subject }}\n\n{{ ($json.text || '').slice(0, 4000) }}",
+    "hasOutputParser": true,
+    "messages": {
+     "messageValues": [
+      {
+       "type": "SystemMessagePromptTemplate",
+       "message": "You triage creator replies to influencer-partnership outreach. Intents: interested = wants to go ahead; rate_negotiation = quotes a fee or asks about budget/pay (takes priority over interested and needs_more_info); needs_more_info = asks about deliverables, audience or terms without discussing money; not_interested; out_of_office; unsubscribe = asks not to be contacted; other. quoted_rate: any fee the creator quoted, copied verbatim, else empty. suggested_reply: under 110 words, warm, answers only with facts present in the thread (otherwise say you will confirm). Never invent prices, budgets, dates, days or times, and never accept or counter a quoted rate: ask for their availability instead. For not_interested or unsubscribe write a one-line polite confirmation that they will not be contacted again. For out_of_office return an empty string."
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "3841a352-262b-488c-b354-136b55266e55",
+   "name": "Gemini",
+   "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+   "typeVersion": 1.2,
+   "position": [
+    240,
+    336
+   ],
+   "parameters": {
+    "modelName": "models/gemini-3-flash-preview",
+    "options": {
+     "temperature": 0.2
+    }
+   }
+  },
+  {
+   "id": "1878a344-ff16-4724-bedc-793623f6c7d5",
+   "name": "Triage schema",
+   "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+   "typeVersion": 1.3,
+   "position": [
+    368,
+    336
+   ],
+   "parameters": {
+    "schemaType": "fromJson",
+    "jsonSchemaExample": "{ \"intent\": \"interested\", \"summary\": \"Wants the budget and deliverables\", \"quoted_rate\": \"Rs 15,000\", \"suggested_reply\": \"Hi Priya, thanks for the quick reply...\" }"
+   }
+  },
+  {
+   "id": "c3e2955a-cbd7-4767-9159-eb3f3d3874a8",
+   "name": "Save reply as draft for human review",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.2,
+   "position": [
+    576,
+    112
+   ],
+   "parameters": {
+    "resource": "draft",
+    "operation": "create",
+    "subject": "=Re: {{ $('Creator reply received').item.json.subject }}",
+    "emailType": "text",
+    "message": "={{ $json.output.suggested_reply || '(no reply needed: ' + $json.output.intent + ')' }}\n\n---\nTriage: {{ $json.output.intent }} | {{ $json.output.summary }}{{ $json.output.quoted_rate ? ' | quoted: ' + $json.output.quoted_rate : '' }}",
+    "options": {
+     "threadId": "={{ $('Creator reply received').item.json.threadId }}",
+     "sendTo": "={{ $('Creator reply received').item.json.from.value[0].address }}"
+    }
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "",
+     "name": "Gmail account"
+    }
+   }
+  },
+  {
+   "id": "72abf3c3-ff67-4379-82ab-3ca4b62e2b42",
+   "name": "Mark reply handled",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.2,
+   "position": [
+    800,
+    112
+   ],
+   "parameters": {
+    "resource": "message",
+    "operation": "markAsRead",
+    "messageId": "={{ $('Creator reply received').item.json.id }}"
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "",
+     "name": "Gmail account"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "Creator reply received": {
+   "main": [
+    [
+     {
+      "node": "Triage reply with Gemini",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Triage reply with Gemini": {
+   "main": [
+    [
+     {
+      "node": "Save reply as draft for human review",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gemini": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Triage reply with Gemini",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Triage schema": {
+   "ai_outputParser": [
+    [
+     {
+      "node": "Triage reply with Gemini",
+      "type": "ai_outputParser",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Save reply as draft for human review": {
+   "main": [
+    [
+     {
+      "node": "Mark reply handled",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1"
+ }
+}

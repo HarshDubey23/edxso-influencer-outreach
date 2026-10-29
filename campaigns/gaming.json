@@ -1,0 +1,29 @@
+{
+  "id": "gaming-2026",
+  "niche": "gaming",
+  "name": "LagLess x Gaming creators",
+  "brand": {
+    "name": "LagLess",
+    "demo_brand": true,
+    "about": "LagLess (fictional demo brand) makes budget wireless earbuds and mobile cooling fans tuned for low-latency mobile gaming.",
+    "creator_value": ["paid collaboration (fee discussed on a call)", "gear to keep plus giveaway units for their community",
+                      "an affiliate code with commission", "a spot in the brand's creator squad"]
+  },
+  "discovery": {"queries": ["bgmi gameplay hindi", "mobile gaming setup india", "free fire india gameplay",
+                            "budget gaming phone review", "valorant india", "indie games review india"]},
+  "filters": {"min_engagement_rate": 2.0},
+  "segments": {
+    "mobile_esports": {"label": "Mobile Esports", "fit_weight": 1.0,
+      "keywords": ["bgmi", "free fire", "pubg", "cod mobile", "rush gameplay", "clutch", "tournament", "scrims"],
+      "angle_hint": "Paid product placement: earbuds and cooler in tournament gameplay."},
+    "pc_console": {"label": "PC & Console", "fit_weight": 0.8,
+      "keywords": ["valorant", "gta", "minecraft", "pc gaming", "ps5", "steam", "gaming pc", "cs2"],
+      "angle_hint": "Sponsored segment in a stream highlight."},
+    "gaming_tech": {"label": "Gaming Gear & Setup", "fit_weight": 1.0,
+      "keywords": ["gaming phone", "setup", "gaming gear", "earbuds", "headphones", "fps test", "latency", "unboxing"],
+      "angle_hint": "UGC content: latency test and review."},
+    "casual_indie": {"label": "Casual & Indie Games", "fit_weight": 0.7,
+      "keywords": ["indie game", "story game", "horror game", "walkthrough", "lets play", "gameplay"],
+      "angle_hint": "Barter collaboration: gear for a giveaway stream."}
+  }
+}

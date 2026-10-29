@@ -1,0 +1,28 @@
+{
+  "id": "lifestyle-2026",
+  "niche": "lifestyle",
+  "name": "Ghar Gully x Lifestyle creators",
+  "brand": {
+    "name": "Ghar Gully",
+    "demo_brand": true,
+    "about": "Ghar Gully (fictional demo brand) sells handcrafted home decor, kitchen organisers and travel essentials made by Indian artisans.",
+    "creator_value": ["paid collaboration (fee discussed on a call)", "products to keep for their home",
+                      "an affiliate commission on sales", "a feature in the artisan-story series"]
+  },
+  "discovery": {"queries": ["day in my life vlog india", "home decor ideas india", "minimalist living india",
+                            "kitchen organization indian", "budget travel india vlog", "productive morning routine india"]},
+  "segments": {
+    "home_decor": {"label": "Home & Decor", "fit_weight": 1.0,
+      "keywords": ["home decor", "room makeover", "home tour", "organization", "organisation", "kitchen", "decor", "diy", "cleaning"],
+      "angle_hint": "Sponsored room or kitchen makeover featuring the artisan pieces."},
+    "daily_vlogs": {"label": "Daily Life Vlogs", "fit_weight": 0.9,
+      "keywords": ["vlog", "day in my life", "routine", "morning routine", "productive", "weekend", "family vlog"],
+      "angle_hint": "Paid product placement inside a day-in-my-life vlog."},
+    "travel": {"label": "Travel", "fit_weight": 0.8,
+      "keywords": ["travel", "trip", "itinerary", "budget travel", "backpacking", "road trip", "goa", "himachal", "kerala"],
+      "angle_hint": "Barter collaboration: travel kit for an upcoming trip vlog."},
+    "minimalism_wellbeing": {"label": "Minimalism & Wellbeing", "fit_weight": 0.9,
+      "keywords": ["minimalism", "minimalist", "slow living", "self care", "habits", "declutter", "journaling"],
+      "angle_hint": "UGC content on decluttering with organisers."}
+  }
+}

@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CACHE = DATA / "cache"
 OUTPUT = ROOT / "output"
-DEFAULT_CAMPAIGN = ROOT / "campaigns" / "edxso_parenting_education.json"
+CAMPAIGNS = ROOT / "campaigns"
+DEFAULTS = CAMPAIGNS / "_defaults.json"
+DEFAULT_CAMPAIGN = CAMPAIGNS / "edxso_parenting_education.json"
 
 
 def load_env(path: Path = ROOT / ".env") -> None:
@@ -28,8 +30,24 @@ def env(name: str, default: str | None = None, required: bool = False) -> str | 
     return val
 
 
+def _merge(base: dict, over: dict) -> dict:
+    out = dict(base)
+    for k, v in over.items():
+        out[k] = _merge(base[k], v) if isinstance(v, dict) and isinstance(base.get(k), dict) else v
+    return out
+
+
 def load_campaign(path: str | Path | None = None) -> dict:
-    return json.loads(Path(path or DEFAULT_CAMPAIGN).read_text(encoding="utf-8"))
+    """Campaign file merged over campaigns/_defaults.json; `brand_safety_extra` is appended to the base blocklist."""
+    c = _merge(json.loads(DEFAULTS.read_text(encoding="utf-8")),
+               json.loads(Path(path or DEFAULT_CAMPAIGN).read_text(encoding="utf-8")))
+    f = c["filters"]
+    f["brand_safety_blocklist"] = f["brand_safety_blocklist"] + f.pop("brand_safety_extra", [])
+    return c
+
+
+def all_campaigns() -> list[dict]:
+    return [load_campaign(p) for p in sorted(CAMPAIGNS.glob("*.json")) if not p.name.startswith("_")]
 
 
 def stage_path(campaign: dict, stage: str) -> Path:

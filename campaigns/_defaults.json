@@ -1,0 +1,36 @@
+{
+  "discovery": {
+    "platform": "YouTube",
+    "region_code": "IN",
+    "relevance_language": "en",
+    "published_within_days": 365,
+    "results_per_query": 50,
+    "pages_per_query": 1,
+    "recent_videos": 12
+  },
+  "filters": {
+    "followers": {"min": 5000, "max": 100000},
+    "min_engagement_rate": 1.5,
+    "min_videos_sampled": 3,
+    "max_days_since_upload": 120,
+    "min_relevance": 6,
+    "min_ml_confidence": 0.35,
+    "min_authenticity": 40,
+    "exclude_made_for_kids": true,
+    "preferred_countries": ["IN"],
+    "brand_safety_blocklist": [
+      "casino", "betting", "satta", "gambling", "rummy", "teen patti", "onlyfans", "18+",
+      "crypto signals", "forex signals", "earn money online", "get rich", "prank", "hot girl",
+      "guaranteed returns", "pump and dump", "100x gem"
+    ],
+    "organization_markers": [
+      "pvt", "ltd", "limited", "official", "university", "news", "tv", "foundation",
+      "public school", "international school", "group of institutions", "edtech company",
+      "store", "shop", "brand", "studios", "media", "network", "exchange"
+    ]
+  },
+  "collaboration_angles": [
+    "Sponsorship", "Affiliate campaign", "UGC content creation", "Brand ambassador program",
+    "Paid product placement", "Barter collaboration"
+  ]
+}

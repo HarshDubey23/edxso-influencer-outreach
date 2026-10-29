@@ -156,6 +156,14 @@ def run(campaign: dict, classified: list[dict]) -> list[dict]:
         e = enrich(r)
         print(f"  [{i}/{len(shortlist)}] {e['name']}: email={e['email']}")
         out.append(e)
+    from . import match  # lazy: match imports ml, which imports classify
+    try:
+        match.brand_fit(campaign, out)
+    except llm.LLMError as err:  # semantic fit is a ranking bonus, never a reason to lose the shortlist
+        print(f"  ! brand-fit scoring skipped: {err}")
+        for e in out:
+            e.update(brand_similarity=None, brand_fit=None, final_score=e["fit_score"])
+    out.sort(key=lambda e: -e["final_score"])
     save_stage(campaign, "enriched", out)
     found = sum(e["email"] != NOT_FOUND for e in out)
     print(f"  emails found for {found}/{len(out)}")

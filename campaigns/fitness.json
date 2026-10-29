@@ -1,0 +1,28 @@
+{
+  "id": "fitness-2026",
+  "niche": "fitness",
+  "name": "PulseRoot x Fitness creators",
+  "brand": {
+    "name": "PulseRoot",
+    "demo_brand": true,
+    "about": "PulseRoot (fictional demo brand) makes plant-based protein and a home-workout app with 20-minute guided routines for busy Indian professionals.",
+    "creator_value": ["paid collaboration (fee discussed on a call)", "free product for the creator and their family",
+                      "a 20% affiliate commission code", "creative freedom over the content format"]
+  },
+  "discovery": {"queries": ["home workout india", "fitness vlog india", "gym transformation natural",
+                            "yoga for beginners hindi", "healthy indian diet plan", "calisthenics beginner india"]},
+  "segments": {
+    "strength_training": {"label": "Strength & Gym Training", "fit_weight": 1.0,
+      "keywords": ["gym", "workout", "strength", "muscle", "bodybuilding", "calisthenics", "push up", "squat", "deadlift", "hypertrophy", "fat loss", "transformation"],
+      "angle_hint": "Paid product placement of the protein in a training or transformation video, with an affiliate code."},
+    "yoga_wellness": {"label": "Yoga & Mobility", "fit_weight": 0.9,
+      "keywords": ["yoga", "asana", "pranayama", "mobility", "stretching", "flexibility", "meditation", "surya namaskar"],
+      "angle_hint": "Sponsored routine video inside the PulseRoot app, or brand ambassador for the morning-yoga series."},
+    "nutrition_diet": {"label": "Nutrition & Diet", "fit_weight": 1.0,
+      "keywords": ["diet", "protein", "nutrition", "meal prep", "calories", "healthy recipe", "weight loss", "diet plan", "macros"],
+      "angle_hint": "UGC content: high-protein Indian recipes using the product."},
+    "running_endurance": {"label": "Running & Endurance", "fit_weight": 0.8,
+      "keywords": ["running", "marathon", "cycling", "cardio", "endurance", "hiit", "5k", "10k"],
+      "angle_hint": "Barter collaboration: product supply for a training block, documented in videos."}
+  }
+}

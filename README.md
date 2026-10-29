@@ -1,155 +1,240 @@
-# EDXSO Micro-Influencer Outreach System
+# Creator Outreach Engine
 
-An automated pipeline that discovers education and parenting micro-influencers on YouTube, filters and classifies them against EDXSO's brand fit, enriches each shortlisted profile, writes a personalized email pitch and Instagram DM with an LLM, and sends (or simulates) the outreach with duplicate protection and a tracker.
+An end-to-end, AI-powered micro-influencer outreach system built on **real YouTube data** across all the niches in the
+brief. It discovers creators, filters them with explainable rules plus a **trained and evaluated ML niche classifier** and
+an **audience-authenticity score**, enriches each profile with only what the creator published, ranks creators against a
+plain-English **brand brief** using embeddings, writes a personalised email and Instagram DM with Gemini, holds anything
+doubtful for **human review**, sends through **n8n + Gmail** with crash-safe duplicate protection, **triages replies**, and
+schedules **follow-ups**.
 
-```
-YouTube Data API ─► Discovery (749 channels) ─► Filtering & classification (40 qualified)
-   ─► Enrichment (email, links, themes, tone) ─► Gemini personalization ─► Validation / review gate
-   ─► Sending layer (dry-run | test | live, via SMTP or n8n + Gmail) ─► SQLite outreach log ─► CSV + HTML report
-```
+**Live demo:** https://edxso-outreach-engine.vercel.app (read-only public dashboard; emails masked; the niche classifier runs in your browser)
+**Run it locally:** `uvicorn outreach.api:app` → http://localhost:8000 (full interactive mode)
 
-**Campaign:** EDXSO (K-12 school consultancy) partnering with Indian-focused creators whose audience is teachers, school leaders and parents, the people who influence how schools are run and chosen.
+![Overview](docs/screenshots/overview.png)
 
-## Results of the test run
+## Results of the test run (all real data, 29 Oct 2026)
 
-| Stage | Result |
+| Niche | Brand brief | Discovered | In 5k–100k | Qualified | Published email | Messages approved |
+|---|---|---:|---:|---:|---:|---:|
+| Education & Parenting | **EDXSO** (real brand) | 749 | 173 | 40 | 8 | 38 |
+| Fitness | PulseRoot (demo) | 215 | 68 | 25 | 8 | 25 |
+| Lifestyle | Ghar Gully (demo) | 205 | 79 | 24 | 12 | 24 |
+| Gaming | LagLess (demo) | 200 | 75 | 19 | 15 | 18 |
+| Crypto & Web3 | BlockSchool (demo) | 356 | 90 | 17 | 10 | 17 |
+| Beauty & Fashion | Dewdrape (demo) | 213 | 74 | 16 | 7 | 16 |
+| Technology | Voltnest (demo) | 331 | 97 | 12 | 3 | 12 |
+| Fintech | PaisaPilot (demo) | 404 | 87 | 8 | 3 | 8 |
+| **Total** | 8 briefs | **2,673 (2,629 unique)** | **743** | **161** | **66** | **158 / 161** |
+
+- **Sending:**
+  - 65 emails simulated (dry-run), each with an `.eml` preview.
+  - 2 real emails sent through **n8n + Gmail** to the operator's test inbox (Education and Gaming), each with its Gmail message id logged.
+  - 160 Instagram DMs queued for manual sending.
+  - A second run skipped every creator already contacted.
+- **Rejection reasons:** every rejected profile lists them. The most common are follower count, then niche relevance, then engagement.
+- **Classifier:** 89.4% accuracy on held-out labels ([MODEL_CARD.md](MODEL_CARD.md)).
+- **Variety:** all six collaboration angles from the brief appear across the batch.
+
+### Screenshots
+
+| | |
 |---|---|
-| Discovered (20 search queries) | **749** real YouTube channels, **173** of them in the 5k-100k range |
-| Qualified after all filters | **40** (23 Teachers & Educators, 15 Parents & Family, 1 Early Childhood, 1 School Leaders); 21 based in India |
-| Median of the shortlist | 19,150 subscribers, 2.46% engagement |
-| Rejection reasons (a channel can fail several) | followers out of range 576 · off-niche 117 · low engagement 86 · made-for-kids 40 · too few videos 21 · institution/media account 19 · brand safety 4 · inactive 3 |
-| Contact email found | **8 / 40**, all published by the creator in their channel description. The other 32 are marked `Not Found`. |
-| Messages | **38 / 40** auto-approved, 2 held for review (word count / invalid angle). All six collaboration angles used across the batch |
-| Sending | 8 simulated (dry-run), 38 Instagram DMs queued for manual sending, **1 real email sent through n8n + Gmail** to the operator's test inbox (Gmail id logged). A second run skipped all 8 as duplicates |
+| ![Creators](docs/screenshots/creators.png) Every profile with pass/fail and the reason for each rule | ![Messages](docs/screenshots/messages.png) Email + DM per creator, word counts, signals used |
+| ![Classifier](docs/screenshots/model.png) In-browser classifier, experiments, confusion matrix | ![Brand match](docs/screenshots/match.png) One brief ranks creators across all niches |
+| ![Ask](docs/screenshots/ask.png) Natural-language questions → typed filter → real rows | ![Replies](docs/screenshots/replies.png) Reply intent, quoted rate, drafted response |
 
-Each creator's metrics come straight from the YouTube API. Nothing is estimated or made up.
+## What goes beyond the brief
 
-## Deliverables
+| Area | The brief asks for | What this system does |
+|---|---|---|
+| Niches | at least one complete filtering category | **8 niche campaigns** (all 9 listed niches, Beauty + Fashion combined as in the brief's example), one shared engine, each defined by a JSON brand brief |
+| Filtering | rule-based pass/fail with reasons | rules **+ ML classifier + authenticity score**, every check recorded with a plain-English reason (the "audit trail") |
+| Classification | meaningful categories | a **scikit-learn model trained on this project's own data**, benchmarked against baselines on an independently labelled held-out set ([MODEL_CARD.md](MODEL_CARD.md)) |
+| Data quality | no fake metrics | engagement from real video stats; **fake-engagement screening**; emails only where published; private fields marked unavailable |
+| Personalisation | dynamic, not one template | creator-specific signals, a **validator** that rejects generic or invented content, a running "don't reuse these phrasings" list, and angle spread across the batch |
+| Review | (in the suggested flow) | **dashboard review queue**: edit, re-validate, approve |
+| Sending | send/simulate, log, no duplicates | **write-ahead log**, duplicate blocking by creator *and* inbox, **no blind retries**, do-not-contact list, test mode that redirects to the operator |
+| Tracking | basic outreach log | log + **reply intelligence** (intent, quoted rate, drafted response) + **follow-up sequence** |
+| Extra | | **brand-brief engine** (semantic search across all niches), **"Ask the data"** chat, **FastAPI** model serving, **public dashboard** |
 
-| File | What it is |
-|---|---|
-| `output/influencers_dataset.csv` | All 749 discovered profiles: name, platform, followers, engagement, niche, email, profile URL, content theme, **PASS/FAIL status and the reason for every failure** |
-| `output/shortlist_enriched.csv` | The 40 qualified creators with every enrichment field (mandatory and optional) |
-| `output/personalized_messages.csv` | Email subject + 60-90 word pitch + 15-30 word DM, collaboration angle, signals used, review status |
-| `output/outreach_tracker.csv` | Influencer, email, message generated, sent, date, status, mode, delivered to, transport, error |
-| `output/report.html` | Review dashboard: stats, every message card, tracker, all profiles with reasons (open in a browser) |
-| `n8n/edxso_outreach_sender.json` | Importable n8n workflow for the sending layer |
+## Architecture
 
-## Tech stack
-
-- **Python 3.10+, standard library only** (`urllib`, `sqlite3`, `smtplib`, `csv`, `concurrent.futures`). There's no `pip install` step and no dependency drift.
-- **YouTube Data API v3** for discovery and metrics.
-- **Google Gemini API** (`gemini-3.5-flash-lite`, structured JSON output) for content themes, tone, and message writing.
-- **n8n Cloud + Gmail node** (or plain SMTP) for delivery.
-- **SQLite** for the outreach log; JSON files for each pipeline stage.
+```mermaid
+flowchart LR
+  subgraph Discover
+    Q[Campaign JSON<br/>queries + brand brief] --> YT[YouTube Data API v3<br/>search · channels · videos]
+  end
+  YT --> S1[(discovered.json)]
+  S1 --> F{Filter & classify}
+  F -->|rules| R[followers · engagement · activity<br/>brand safety · made-for-kids · individual]
+  F -->|ML| M[Hybrid niche classifier<br/>TF-IDF + LR ⊕ keyword rules]
+  F -->|stats| A[Authenticity score<br/>reach · like-rate · comments]
+  F --> S2[(classified.json<br/>pass/fail + reasons)]
+  S2 --> E[Enrich<br/>published emails · links · robots.txt-aware website check]
+  E --> G1[Gemini: themes, tone, standout video]
+  G1 --> BF[Gemini embeddings:<br/>semantic brand fit]
+  BF --> S3[(enriched.json)]
+  S3 --> P[Gemini: email + DM<br/>+ validator, up to 3 attempts]
+  P --> RV{Review gate<br/>auto-approve or human}
+  RV --> SND[Sender<br/>dry-run · test · live]
+  SND -->|webhook| N8N[n8n: Gmail send]
+  SND --> DB[(SQLite: outreach_log,<br/>replies, suppression)]
+  N8N --> INBOX[Creator replies] --> TRI[n8n + Gemini reply triage<br/>→ Gmail draft] --> DB
+  DB --> FU[Follow-up after N days<br/>if no reply]
+  DB --> UI[FastAPI + dashboard]
+```
 
 ## How each stage works
 
 ### 1. Discovery (`outreach/discover.py`)
-- Runs `search.list` on 20 long-tail queries from the campaign file (`teacher vlog india`, `nep 2020 for teachers`, `choosing the right school for your child`, ...). The search is limited to India, English-language results and videos from the last 365 days.
-- Searching **videos** rather than channels surfaces creators who are actively posting on the topic now.
-- `channels.list` pulls subscribers, total views, country, description, keywords, topic categories and the `madeForKids` flag for every channel.
-- For channels near the follower range, it pulls the last 12 uploads (`playlistItems` + `videos.list`) to measure engagement.
-- **Engagement rate** = (likes + comments) / views across recent uploads at least 3 days old. Brand-new uploads haven't collected engagement yet, and videos with hidden likes are skipped instead of counted as zero. It also stores average views and views-to-subscribers (reach).
-- It's quota-aware. A full run costs about 2,600 of the 10,000 free daily units, and every response is cached on disk, so re-runs cost no quota and give the same results.
+- Each campaign (`campaigns/*.json`, merged over `campaigns/_defaults.json`) lists 6–20 long-tail search queries. The search is limited to India, English-language results and videos from the past year.
+- The system searches **videos**, not channels, so it finds creators who are actively posting on the topic now.
+- `channels.list` returns subscribers, country, description, keywords, topic categories and the `madeForKids` flag.
+- For channels near the 5k–100k range, it pulls the last 12 uploads (`playlistItems` + `videos.list`).
+- **Engagement rate** = (likes + comments) / views over uploads at least 3 days old. Videos with hidden likes are excluded rather than counted as zero.
+- It's quota-aware: every API response is cached on disk, so re-runs cost no quota and a stopped run resumes where it left off.
 
-### 2. Filtering & classification (`outreach/classify.py`)
-Every rule produces a check `{passed, detail}`. A creator qualifies only if **all** hard checks pass. Rejected creators list every failed check in plain English, for example `"250,000 followers (range 5,000-100,000)"`.
+### 2. Filtering & classification (`outreach/classify.py`, `outreach/ml.py`, `outreach/authenticity.py`)
+Every rule writes `{passed, detail}`. A creator qualifies only if all hard checks pass. A rejected creator lists every check it failed, for example *"classifier says gaming (0.81), technology only 0.07"*.
 
-| Rule | Threshold (from `campaigns/*.json`) |
+| Check | Rule (per campaign, overridable) |
 |---|---|
-| Follower count | 5,000-100,000; hidden counts are rejected |
-| Engagement rate | ≥ 1.5% over at least 3 sampled videos |
+| Follower range | 5,000–100,000; hidden counts are rejected |
+| Engagement | ≥ 1.5% (gaming ≥ 2%), over at least 3 sampled videos |
 | Activity | last upload ≤ 120 days ago |
-| Niche relevance | keyword evidence ≥ 6 for the best-matching audience segment (only judged when recent video titles were fetched, so a follower-count rejection is never mislabelled "off-niche") |
-| Audience is not children | `madeForKids` channels rejected (their viewers are kids, not parents or educators) |
-| Brand safety | blocklist: betting, casino, "earn money online", prank, ... |
-| Individual creator | rejects names that mark an institution or media brand (Pvt, Ltd, Official, News, Public School, ...) |
-| Geography | soft rule: India-based creators get a bonus in the fit score |
+| Niche relevance (rules) | keyword evidence ≥ 6 for the best segment; judged only when video titles were fetched |
+| **Niche classifier (ML)** | hybrid model gives the campaign's niche probability ≥ 0.35 |
+| **Audience authenticity** | score ≥ 40 / 100 (see below) |
+| Not made for kids | `madeForKids` channels are rejected (their audience is children, not buyers) |
+| Brand safety | shared blocklist plus niche extras (crypto: signals, airdrops, presales; fintech: "intraday tips", "double your money") |
+| Individual creator | rejects names that mark an institution or media brand |
 
-**Classification:** six brand-fit segments, each with its own keywords and weight: Teachers & Educators, School Leaders, Parents & Family, Early Childhood, EdTech, and Students (low weight because students don't choose schools).
-- Relevance counts keyword matches in the channel title (×2), description and keywords, and each recent video title. Recent titles count most because they show what the creator makes *now*.
-- A **fit score (0-100)** ranks the shortlist: relevance 40, engagement 25, reach 15, segment weight 10, preferred geography 10.
+**Segments:** each niche has 4–6 brand-fit segments with their own keywords and weights (for example Teachers & Educators, School Leaders, Parents & Family). A creator's segment is the one with the strongest weighted evidence.
 
-### 3. Enrichment (`outreach/enrich.py`)
-- **Contact email**, only where the creator published it, in this priority order:
-  1. The channel description (including de-obfuscating `name [at] site [dot] com`).
-  2. Their own linked website (homepage plus `/contact`), fetched only where `robots.txt` allows it.
-  3. A *business-intent* line ("for business/collab...") in a recent video description. Institutional domains (`.ac.in`, `.edu`, `.gov`) are dropped, because video descriptions often quote exam-board or sponsor emails.
+**Audience authenticity (0–100):** calculated from public stats, so no private analytics are needed.
+- Low reach: the median video reaches under 1% (heavy penalty) or under 3% of subscribers.
+- A like rate more than 4× the niche median.
+- Fewer than 4 comments per 1,000 likes.
+- One viral outlier hiding a low typical view count.
 
-  If none of these turns up an email, the field is `Not Found`. YouTube's "View email address" button sits behind a CAPTCHA and is deliberately not automated.
-- **Links:** Instagram, TikTok, X, Facebook, LinkedIn and website, parsed from the channel and video descriptions.
-- **Content themes, tone, inferred audience, standout video:** Gemini reads the real description and the last 12 titles. The "standout video" must exactly match a real title, otherwise it is replaced with the latest upload, so it can't invent a video.
-- **Audience age, gender and geography:** marked `Not Available (private YouTube Analytics data)`, because only the creator can see them. The creator's own country is reported separately and labelled as such.
+Each signal leaves a human-readable flag. The hard cut is deliberately conservative; flags mainly lower the ranking.
 
-### 4. AI personalization (`outreach/personalize.py`)
-**Prompt design:**
-- **System prompt:** EDXSO's real services and what a creator gains, plus hard rules. Word limits; reference one specific recent video or theme; one collaboration angle from the brief's list (Sponsorship, Affiliate, UGC, Brand ambassador, Paid placement, Barter); a value proposition; a low-pressure ask. **No invented facts and no quoted metrics.**
-- **User prompt:** that creator's own signals (segment, themes, tone, standout and latest video, country, segment-specific angle hint).
-- **Variety:** phrasings already used for earlier creators are passed in as "do not reuse", and so is a running count of collaboration angles already pitched, so the batch spreads across angles instead of settling into one template. Generic DM openers ("Hello!", "Loved your…") are rejected by the validator.
+**Fit score:** ranks the shortlist. Weights: keyword relevance 25, ML confidence 15, engagement 20, reach 10, authenticity 10, segment weight 10, India-based 10.
 
-**Validation (the review gate):**
-- Email 60-90 words, DM 15-30 words.
-- Greets the creator by name, with no `[placeholders]`.
-- Must share real content words with the creator's titles or themes, so a generic "we'd like to collaborate" fails.
-- Must not quote follower or engagement numbers.
-- The angle must be one of the allowed ones.
+### 3. ML niche classifier — see [MODEL_CARD.md](MODEL_CARD.md)
+- **Weak supervision:** a channel's label is the one niche whose searches found it, kept only when its own text has keyword evidence for that niche.
+- **Independent evaluation:** Gemini (temperature 0) labels a stratified random sample of 200 channels and may answer "other". These channels are held out from training.
+- **Experiments:** keyword rules vs TF-IDF + logistic regression vs a **hybrid** (model probabilities averaged with the rule distribution), plus a Gemini-embedding variant when quota allows. It reports cross-validation, held-out accuracy, macro-F1, a confusion matrix and the abstain-threshold trade-off.
+- **Result:** an 831-channel corpus, 199 channels held out for Gemini gold labels, and 385 weakly labelled channels for training. **The hybrid reaches 89.4% held-out accuracy (macro-F1 0.853) and commits to a niche on 97.5% of channels.** TF-IDF + LR alone gets 82.4% (0.812) and the hand-written keyword rules 80.9% (0.752). The model learns beyond the keyword lists; the rules steady the niches with little data.
+- The model is exported to JSON, and `dashboard/model.js` reproduces scikit-learn's maths exactly, so the public page classifies text in the browser.
 
-Failures go back to the model with the exact violations, for up to 3 attempts. Anything still failing becomes `needs_review` and is **never sent automatically**.
+### 4. Enrichment (`outreach/enrich.py`, `outreach/match.py`)
+- **Contact email:** only emails the creator published, checked in this order:
+  1. The channel description, including de-obfuscating `name [at] site [dot] com`.
+  2. Their own website (homepage + `/contact`, fetched only where robots.txt allows).
+  3. A *business-intent* line in a video description. Institutional domains (`.ac.in`, `.edu`, `.gov`) are dropped.
 
-### 5. Sending layer (`outreach/sender.py`, `n8n/`)
-- **Selects** only approved messages with a syntactically valid email. `Not Found`, an invalid email or an unapproved message are each skipped with the reason.
+  If none of these turns up an email, the field is `Not Found`. YouTube's CAPTCHA-protected email button is never automated.
+- **Links:** Instagram, TikTok, X, Facebook, LinkedIn and website.
+- **Themes, tone, inferred audience and standout video:** Gemini reads the real description and titles. The standout video must exactly match a real title.
+- **Audience age and gender:** `Not Available (private YouTube Analytics data)`. The creator's country is reported separately and labelled as such.
+- **Semantic brand fit:** Gemini embeddings of the brand brief and the creator's content, ranked within the shortlist. `final_score = 0.75 × fit + 0.25 × brand fit`.
+
+### 5. AI personalisation & review (`outreach/personalize.py`)
+- **System prompt:** the brand's real offer, the brief's six collaboration angles, word limits, and strict rules: no invented facts, numbers, past collaborations or placeholders.
+- **User prompt:** this creator's own segment, themes, tone, standout and latest video, and country, plus a segment-specific angle hint.
+- **Variety:** a running list of phrasings already used and a count of angles already pitched, so the batch doesn't collapse into one template.
+- **Validator:** email 60–90 words and DM 15–30; greets the creator by a name taken from their channel name; shares real words with their content; no follower or engagement numbers; no generic DM opener ("Hello!", "Loved your…"); a valid angle.
+
+Failures go back to the model with the exact violations, for up to 3 attempts. Anything still failing is `needs_review`. In the dashboard a human can edit a message, and the edit is re-validated with the same rules.
+
+### 6. Sending (`outreach/sender.py`, `n8n/`)
 - **Modes:**
-  - `dry-run` (default): writes an `.eml` preview to `output/outbox/` and logs `simulated`.
-  - `test`: really sends, but redirects every email to `TEST_RECIPIENT`, with the intended address in the subject.
-  - `live`: requires `--confirm-live`.
-- **Transports:** `--via smtp` (Gmail app password) or `--via n8n`. The n8n option POSTs the batch to the *EDXSO Outreach Sender* workflow (Webhook → Split Out → Gmail → result per email → Respond). That workflow returns per-email `sent`/`failed` statuses, which go into the log. The webhook only runs when the request carries a secret `X-Outreach-Token` header.
-- **Duplicate prevention:** checked before sending (by creator *and* by email address, including within the same batch) and enforced by partial `UNIQUE` indexes in SQLite. A failed send stays retryable; a successful one can never be logged twice.
-- **Write-ahead logging:** a `sending` row is written *before* anything leaves the machine and updated afterwards. If the process dies mid-send, that row blocks a resend instead of silently emailing the creator twice.
-- **No blind retries:** the n8n call is never retried, because sending is not idempotent. If n8n doesn't reply, the batch is marked `unconfirmed` (blocked from resending; check Gmail's Sent folder) rather than `failed`.
-- **Errors:** one failed email is logged as `failed` with the error and doesn't stop the batch.
-- **Instagram DMs:** Meta's API doesn't allow cold DMs to creators, so nothing is automated or bypassed. Each approved DM is queued as `dm_queued_manual`, with the creator's Instagram link if they published one. A person sends it by hand and records it with `python -m outreach mark-dm --channel <id>`.
+  - `dry-run` (default): `.eml` previews.
+  - `test`: really sends, but redirects to `TEST_RECIPIENT`, with the intended address in the subject.
+  - `live`: requires `--confirm-live` and isn't available from the UI.
+- **Transport:** SMTP, or the **n8n workflow "EDXSO Outreach Sender"** (webhook → Gmail → per-email status back). The webhook is protected by a secret token header.
+- **Duplicate safety:**
+  - A `sending` row is written before each email goes out (write-ahead).
+  - Partial `UNIQUE` indexes cover both creator and inbox.
+  - The n8n call is **never retried**: if there's no reply, the email is marked `unconfirmed`, not `failed`.
+- **Do-not-contact list:** checked before every send in every campaign.
+- **Instagram DMs:** Meta doesn't allow automated cold DMs, so approved DMs are queued `dm_queued_manual` with the creator's Instagram link when they published one. A person sends them and runs `mark-dm`.
+
+### 7. Replies & follow-ups (`outreach/replies.py`, n8n "EDXSO Reply Triage")
+- **Reply triage:**
+  - Gemini classifies intent (interested, needs more info, rate negotiation, not interested, out of office, unsubscribe).
+  - It extracts the creator's questions and any rate they quoted, and drafts a reply that uses only facts from the brief.
+  - Not-interested and unsubscribe replies go on the suppression list.
+- **In n8n:** a Gmail trigger watches for replies to outreach, Gemini triages them, and the suggested reply is saved as a **Gmail draft in the same thread** for a human to send. Nothing is sent automatically.
+- **Follow-ups:** `python -m outreach followup --days 4` sends one follow-up per creator when it's due. It never goes to creators who replied or are suppressed, and never twice.
+
+### 8. API & dashboard (`outreach/api.py`, `dashboard/`)
+| Endpoint | What it does |
+|---|---|
+| `GET /api/data` | everything the dashboard shows |
+| `POST /api/classify` | **model serving**: hybrid niche prediction for any text |
+| `POST /api/match` | brand-brief → ranked creators across all niches (embeddings) |
+| `POST /api/ask` | natural-language question → typed filter (Gemini) → rows from the data (no hallucinated answers) |
+| `PATCH /api/campaigns/{id}/messages/{channel}` | human edit + re-validation + approve |
+| `POST /api/campaigns/{id}/send` | dry-run or test send (live is CLI-only) |
+| `POST /api/replies` | reply triage (+ optional save, which suppresses unsubscribes) |
+
+The dashboard runs in two modes:
+- **Live** (local API): edit and approve messages, send, ask, match and triage.
+- **Public** (static, on Vercel): everything is precomputed and emails are masked. The classifier still runs live in the browser.
 
 ## Setup
 
 ```bash
-git clone <repo> && cd edxso-influencer-outreach
-cp .env.example .env        # then fill in the keys below
-python -m unittest discover -s tests -v     # 19 offline tests, no keys needed
-python -m outreach run                       # full pipeline, dry-run sending
+git clone https://github.com/HarshDubey23/edxso-influencer-outreach && cd edxso-influencer-outreach
+pip install -r requirements.txt          # scikit-learn, joblib, fastapi, uvicorn (the core pipeline is stdlib-only)
+cp .env.example .env                     # YOUTUBE_API_KEY, GEMINI_API_KEY, TEST_RECIPIENT, N8N_WEBHOOK_URL/TOKEN
+python -m unittest discover -s tests -v  # offline tests, no keys needed
 ```
-
-`.env` keys:
-- `YOUTUBE_API_KEY`: Google Cloud Console → enable *YouTube Data API v3* → Credentials → API key.
-- `GEMINI_API_KEY`: aistudio.google.com/apikey (free tier). `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`.
-- `TEST_RECIPIENT`: your own inbox for `--mode test`.
-- SMTP transport: `SMTP_USER` / `SMTP_PASSWORD` (Gmail App Password).
-- n8n transport: `N8N_WEBHOOK_URL` and `N8N_WEBHOOK_TOKEN`. Import `n8n/edxso_outreach_sender.json`, attach a Gmail OAuth2 credential, set the token in the webhook's *Only Run If* option, and publish.
-
-Stages can be run one at a time, and each reads the previous stage's JSON in `data/<campaign-id>/`:
 
 ```bash
-python -m outreach discover | classify | enrich | personalize | export
-python -m outreach send --mode dry-run
-python -m outreach send --mode test --via n8n      # real Gmail delivery to TEST_RECIPIENT
-python -m outreach send --mode live --via smtp --confirm-live --limit 20
-python -m outreach mark-dm --channel UCxxxx
+python -m outreach discover --campaign all     # YouTube discovery for every niche
+python -m outreach train                       # train + evaluate the niche classifier
+python -m outreach classify --campaign all     # rules + ML + authenticity
+python -m outreach enrich --campaign all       # emails, links, themes, semantic brand fit
+python -m outreach personalize --campaign all  # Gemini email + DM with validation
+python -m outreach send --campaign all         # dry-run (add --mode test --via n8n to really send to yourself)
+python -m outreach followup --campaign all --days 4
+python -m outreach demo                        # capture ask/match/reply examples for the public page
+python -m outreach site                        # combined exports + static site in site/
+uvicorn outreach.api:app                       # API + dashboard on http://localhost:8000
 ```
 
-**New niche:** copy `campaigns/edxso_parenting_education.json`, change the queries, segments, thresholds and brand, then run with `--campaign campaigns/your_file.json`. The code doesn't change.
+**New niche or brand:** add `campaigns/<name>.json` (queries, segments with keywords and angle hints, brand brief, optional overrides). The code doesn't change.
 
-## Scaling from 50 to 500+
-- Add queries or set `pages_per_query: 3`: each page is 100 quota units, so about 90 pages per day fit in the free quota. Discovery fetches channels in groups of 50 and recent videos with 8 parallel workers.
-- Stages are independent and cached, so a crash or quota stop resumes without re-spending quota or LLM calls.
-- The LLM is throttled (`GEMINI_RPM`); on a paid tier, raise it or parallelise `personalize`.
-- SQLite works fine at this scale. The log schema maps directly onto Postgres if several senders share it.
-- Sending supports `--limit` for daily warm-up caps.
+## Deliverables
+
+| File | Contents |
+|---|---|
+| `output/ALL_influencers_dataset.csv` | every discovered profile in every niche: name, platform, followers, engagement, niche, ML niche, authenticity, email, URL, themes, **status + reasons** |
+| `output/ALL_shortlist_enriched.csv` | qualified creators with every mandatory and optional enrichment field |
+| `output/ALL_personalized_messages.csv` | email subject + pitch, DM, angle, signals used, word counts, review status |
+| `output/ALL_outreach_tracker.csv` | influencer, email, message generated, sent, date, status, mode, transport, error |
+| `output/<campaign>/` | the same four files per niche |
+| `MODEL_CARD.md`, `models/metrics.json` | classifier evaluation |
+| `n8n/*.json` | importable sender and reply-triage workflows |
+
+## Scaling to 500+ creators
+- **More discovery:** add queries or set `pages_per_query`. A query costs 100 YouTube quota units, so about 90 pages fit in the free daily quota. Video fetches run 8 in parallel.
+- **Resumable stages:** every stage reads and writes JSON, and every API or LLM call is cached, so a crash or a quota stop resumes for free.
+- **Model upkeep:** the classifier retrains in seconds as the corpus grows. Creator embeddings are computed once and stored.
+- **Storage:** SQLite is fine at this size. The schema maps directly onto Postgres if several workers send at once.
+- **Sending pace:** `--limit` caps daily sends for inbox warm-up.
 
 ## Limitations (stated honestly)
-- **Email coverage is 8/40.** Most creators keep their business email behind YouTube's CAPTCHA-protected button or in an Instagram bio. Bypassing those would break the platforms' terms, so those creators are marked `Not Found`. Paid enrichment tools (Hunter, Apollo) or a manual check could close this gap.
-- **Audience age, gender and geography** are private YouTube Analytics data. They would come from the creator's media kit after first contact.
-- **Only YouTube** is used for discovery. Instagram and TikTok handles are captured when creators publish them, but those platforms aren't scraped.
-- **YouTube rounds subscriber counts** to 3 significant figures (for example 19,150 shows as 19.1K).
-- **Niche relevance is keyword-based**: explainable and free, but a creator can slip through on vocabulary alone. The fit-score ranking and the human review gate reduce this.
-- **Email validity** is checked by format only; there's no MX lookup or verification service.
-- **Test sends:** with test mode on, messages go only to the operator's inbox. No real creator was emailed during this assignment.
+- **Email coverage is low.** Most creators keep their business email behind YouTube's CAPTCHA button or in an Instagram bio. Getting past either would break the platform's terms, so those creators are `Not Found`. A paid enrichment API or a manual check would close the gap.
+- **Audience age, gender and geography** are private analytics. They come from a creator's media kit after first contact.
+- **YouTube is the data source.** Instagram and TikTok handles are captured when published, but those platforms aren't scraped.
+- **Classifier labels:** the training labels are weak and the evaluation judge is an LLM, not a human, so the accuracy is indicative. Hindi script is ignored by the tokenizer.
+- **Rounded counts:** YouTube rounds subscriber counts to 3 significant figures.
+- **Free-tier limits:** Gemini's free tier caps each model at about 500 requests a day and rate-limits embeddings.
+  - Messages were written by `gemini-3.5-flash-lite`. After it hit its daily cap, the last niche used `gemini-3.5-flash` and `gemini-3.1-flash-lite`, and each message records its model.
+  - When embeddings are limited, brand-fit ranking falls back to the fit score and the run says so.
+  - The niche classifier's Gemini-embedding experiment couldn't run because of the same limit.
+- **Brands:** apart from EDXSO, the brands are **fictional demo briefs**. No real creator was emailed: test sends went only to the operator's inbox.
