@@ -1,0 +1,109 @@
+{
+  "id": "edxso-parenting-education-2026",
+  "name": "EDXSO x Education & Parenting creators",
+  "brand": {
+    "name": "EDXSO",
+    "website": "https://www.edxso.com",
+    "about": "EDXSO is a K-12 education consultancy that helps schools become centres of excellence through institutional consulting, third-party school evaluation, teacher and leadership development (competency-based education training), and data-driven tech integration in classrooms.",
+    "creator_value": [
+      "paid collaboration (fee discussed on a short call)",
+      "early access to EDXSO's research-backed teaching and school-quality resources",
+      "co-created content with EDXSO's school-improvement experts",
+      "a featured spot in EDXSO's educator and parent community"
+    ]
+  },
+  "discovery": {
+    "platform": "YouTube",
+    "region_code": "IN",
+    "relevance_language": "en",
+    "published_within_days": 365,
+    "results_per_query": 50,
+    "pages_per_query": 1,
+    "recent_videos": 12,
+    "queries": [
+      "teacher vlog india",
+      "classroom management tips for teachers",
+      "teaching strategies for school teachers",
+      "cbse teacher training",
+      "nep 2020 for teachers",
+      "competency based education teachers",
+      "lesson plan ideas b.ed",
+      "parenting tips india",
+      "how to help child study at home",
+      "choosing the right school for your child",
+      "positive parenting school age kids",
+      "homeschooling india",
+      "montessori activities at home",
+      "phonics teaching for kids",
+      "edtech tools for teachers",
+      "ai tools for teachers classroom",
+      "school principal leadership",
+      "parent teacher meeting tips",
+      "kids screen time parenting advice",
+      "early childhood education india"
+    ]
+  },
+  "filters": {
+    "followers": {"min": 5000, "max": 100000},
+    "min_engagement_rate": 1.5,
+    "min_videos_sampled": 3,
+    "max_days_since_upload": 120,
+    "min_relevance": 4,
+    "exclude_made_for_kids": true,
+    "preferred_countries": ["IN"],
+    "brand_safety_blocklist": [
+      "casino", "betting", "satta", "gambling", "rummy", "teen patti", "onlyfans", "18+",
+      "crypto signals", "forex signals", "earn money online", "get rich", "prank", "hot girl"
+    ],
+    "organization_markers": [
+      "pvt", "ltd", "limited", "official", "university", "news", "tv", "foundation",
+      "public school", "international school", "group of institutions", "edtech company"
+    ]
+  },
+  "segments": {
+    "teachers_educators": {
+      "label": "Teachers & Educators",
+      "fit_weight": 1.0,
+      "keywords": ["teacher", "teachers", "teaching", "classroom", "lesson plan", "pedagogy", "b.ed", "ctet", "educator",
+                   "teacher training", "tlm", "activity based learning", "nep", "competency based", "school teacher", "class management"],
+      "angle_hint": "Brand ambassador for EDXSO's Teacher & Leadership Development programme, or a sponsored video walking through a competency-based teaching technique."
+    },
+    "school_leaders": {
+      "label": "School Leaders & Administrators",
+      "fit_weight": 1.0,
+      "keywords": ["principal", "school leadership", "school management", "school owner", "school administration",
+                   "accreditation", "affiliation", "school growth", "head of school", "school improvement"],
+      "angle_hint": "Sponsored deep-dive on school self-evaluation and quality frameworks, featuring EDXSO's third-party evaluation and consulting."
+    },
+    "parents_family": {
+      "label": "Parents & Family",
+      "fit_weight": 0.9,
+      "keywords": ["parenting", "parent", "parents", "mom", "mother", "dad", "father", "toddler", "child", "children",
+                   "kids", "family", "homeschool", "homeschooling", "screen time", "mommy"],
+      "angle_hint": "Sponsored or UGC video helping parents judge what good teaching and a good school look like, with EDXSO's school-quality checklist as the hook."
+    },
+    "early_childhood": {
+      "label": "Early Childhood Education",
+      "fit_weight": 0.9,
+      "keywords": ["montessori", "preschool", "kindergarten", "phonics", "early childhood", "play based", "nursery", "pre-primary", "foundational literacy"],
+      "angle_hint": "Paid product placement / co-created activity series on foundational learning, linked to EDXSO's early-years teacher training."
+    },
+    "edtech_tools": {
+      "label": "EdTech & Classroom Technology",
+      "fit_weight": 0.8,
+      "keywords": ["edtech", "google classroom", "digital classroom", "smart class", "ai for teachers", "chatgpt for teachers",
+                   "canva for education", "online teaching", "ai tools", "teaching tools"],
+      "angle_hint": "Affiliate or sponsored tutorial showing data-driven classroom tech integration, aligned with EDXSO's Tech Integration practice."
+    },
+    "students_study": {
+      "label": "Students & Study Skills",
+      "fit_weight": 0.4,
+      "keywords": ["study tips", "exam preparation", "board exam", "topper", "study motivation", "how to study"],
+      "angle_hint": "Barter collaboration: study-skills content that parents and teachers can share, with EDXSO resources."
+    }
+  },
+  "collaboration_angles": [
+    "Sponsorship", "Affiliate campaign", "UGC content creation", "Brand ambassador program",
+    "Paid product placement", "Barter collaboration"
+  ]
+}
