@@ -11,8 +11,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import autopilot, brand, gmail, live, llm, workspace
-from .config import env
+from . import autopilot, brand, gmail, live, llm, pg, workspace
+from .config import ROOT, env
 from .sender import connect, now
 
 PUBLIC = ("/login", "/u/", "/healthz")
@@ -78,6 +78,8 @@ def install(app: FastAPI) -> None:
 
     @app.on_event("startup")
     def _start():
+        if pg.enabled():
+            print(f"Restored {pg.restore_files(ROOT)} files from Postgres")
         if env("AUTOPILOT_THREAD", "1") == "1":
             autopilot.start_scheduler()
 

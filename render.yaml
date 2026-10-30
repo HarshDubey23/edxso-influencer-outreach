@@ -1,21 +1,23 @@
 # One-click deploy: https://render.com/deploy?repo=https://github.com/HarshDubey23/edxso-influencer-outreach
-# The persistent disk keeps settings, the encrypted Gmail token and the outreach log across restarts
-# (Render disks need the Starter plan; without a disk everything resets on each deploy).
+# Free web service; all state (settings, encrypted Gmail token, outreach log, run results) lives in Postgres
+# (DATABASE_URL, e.g. Neon's free tier), so the free plan's wiped-on-restart disk loses nothing.
+# Free services sleep after 15 idle minutes: the n8n agent's hourly ping keeps the autopilot running.
 services:
   - type: web
     name: outreach-engine
     runtime: docker
-    plan: starter
+    plan: free
+    region: singapore
     healthCheckPath: /healthz
-    disk:
-      name: data
-      mountPath: /app/data
-      sizeGB: 1
     envVars:
+      - key: DATABASE_URL
+        sync: false          # Neon pooled connection string
       - key: SECRET_KEY
         generateValue: true
       - key: ADMIN_PASSWORD
         sync: false
+      - key: API_TOKEN
+        generateValue: true
       - key: BASE_URL
         sync: false          # e.g. https://outreach-engine.onrender.com
       - key: YOUTUBE_API_KEY
@@ -28,5 +30,3 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
-      - key: WORKSPACE_ONLY
-        value: "1"

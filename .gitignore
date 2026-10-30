@@ -7,3 +7,5 @@ output/outbox/
 .impeccable/mocks/
 campaigns/workspace.json
 data/*-workspace/
+.neon
+.env.neon

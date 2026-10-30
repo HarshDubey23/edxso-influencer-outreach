@@ -202,6 +202,17 @@ class LiveSearch(unittest.TestCase):
             self.assertFalse(live.start("Acme", "kettles for home baristas"))
 
 
+class Postgres(unittest.TestCase):
+    def test_sqlite_sql_translates(self):
+        from outreach.pg import Row, translate
+        self.assertEqual(translate("INSERT OR IGNORE INTO suppression (email) VALUES (?)"),
+                         "INSERT INTO suppression (email) VALUES (%s) ON CONFLICT DO NOTHING")
+        self.assertEqual(translate("SELECT 1 WHERE kind LIKE 'email%' AND id=?"), "SELECT 1 WHERE kind LIKE 'email%%' AND id=%s")
+        self.assertIn("BIGSERIAL PRIMARY KEY", translate("id INTEGER PRIMARY KEY AUTOINCREMENT"))
+        r = Row(a=1, b=2)
+        self.assertEqual((r["b"], r[0], dict(r)), (2, 1, {"a": 1, "b": 2}))
+
+
 class AutopilotGuards(unittest.TestCase):
     def test_send_next_respects_window_live_footer_and_review_gate(self):
         from outreach import autopilot

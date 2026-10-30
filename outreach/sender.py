@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from email.message import EmailMessage
 from email.utils import make_msgid
 
+from . import pg
 from .config import DATA, OUTPUT, env
 from .enrich import NOT_FOUND, VALID_EMAIL
 from .http import HttpError, request_json
@@ -46,6 +47,10 @@ SENT_OK = ("simulated", "test_sent", "sent")
 
 
 def connect(path=None) -> sqlite3.Connection:
+    if path is None and pg.enabled():  # hosted: Postgres (Neon), same interface
+        db = pg.Connection()
+        db.executescript(SCHEMA + "ALTER TABLE outreach_log ADD COLUMN IF NOT EXISTS thread_id TEXT;")
+        return db
     db = sqlite3.connect(path or DATA / "outreach.db", timeout=30, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)

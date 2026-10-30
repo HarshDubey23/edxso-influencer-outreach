@@ -58,10 +58,17 @@ def stage_path(campaign: dict, stage: str) -> Path:
     return DATA / campaign["id"] / f"{stage}.json"
 
 
+def _mirror(p: Path) -> None:
+    from . import pg  # hosted installs keep a copy in Postgres; their disk is wiped on restart
+    if pg.enabled():
+        pg.save_file(p, ROOT)
+
+
 def save_stage(campaign: dict, stage: str, records) -> Path:
     p = stage_path(campaign, stage)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")
+    _mirror(p)
     return p
 
 

@@ -6,7 +6,7 @@ import json
 import re
 
 from . import llm, workspace
-from .config import ROOT
+from .config import ROOT, _mirror
 
 SCHEMA = {"type": "OBJECT", "properties": {
     "niche": {"type": "STRING"},
@@ -72,6 +72,7 @@ def save(c: dict) -> str:
         raise ValueError("; ".join(errs))
     path = ROOT / workspace.get("campaign_file")
     path.write_text(json.dumps(c, indent=2, ensure_ascii=False), encoding="utf-8")
+    _mirror(path)
     workspace.event(f"Campaign saved: {c['name']} ({len(c['discovery']['queries'])} queries, {len(c['segments'])} segments)")
     return str(path)
 
