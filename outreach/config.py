@@ -48,10 +48,10 @@ def load_campaign(path: str | Path | None = None) -> dict:
 
 def all_campaigns() -> list[dict]:
     """Every campaign file; a deployed install sets WORKSPACE_ONLY=1 so only its own brand's campaign shows."""
-    files = sorted(CAMPAIGNS.glob("*.json"))
-    own = os.environ.get("WORKSPACE_ONLY") == "1"  # an install sees only its own brand; the demo build never sees it
-    files = [p for p in files if (p.name == "workspace.json") == own]
-    return [load_campaign(p) for p in files if not p.name.startswith("_")]
+    if os.environ.get("WORKSPACE_ONLY") == "1":  # an install sees only its own brand; the demo build never sees it
+        own = ROOT / os.environ.get("CAMPAIGN_FILE", "campaigns/workspace.json")
+        return [load_campaign(own)] if own.exists() else []
+    return [load_campaign(p) for p in sorted(CAMPAIGNS.glob("*.json")) if not p.name.startswith("_") and p.name != "workspace.json"]
 
 
 def stage_path(campaign: dict, stage: str) -> Path:

@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1 WORKSPACE_ONLY=1
+ENV PYTHONUNBUFFERED=1 WORKSPACE_ONLY=1 CAMPAIGN_FILE=data/workspace.json
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY outreach/ outreach/

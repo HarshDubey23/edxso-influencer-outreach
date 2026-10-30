@@ -212,7 +212,14 @@ uvicorn outreach.api:app                       # API + dashboard on http://local
 ## Self-hosted autopilot (run it for your own brand)
 
 The same engine, packaged so any brand can run outreach from its own Gmail without touching the CLI.
-The **Control room** (`/control.html`, behind a password) is where it is driven:
+
+**Live search** (`/live.html`, the page you land on after signing in): type your brand and who you want to reach, press
+*Search and run*. Nothing is precomputed: the AI plans the searches, YouTube is queried right then, and every step streams
+in as it happens: channels found, pass/fail with reasons, published emails, the email and DM written for each creator, and
+test emails sent from your Gmail. A full run (about 400 channels, 25 shortlisted) takes 5–10 minutes on free-tier API
+quotas. The same run can be started by the **n8n agent** below.
+
+The **Control room** (`/control.html`) is where the always-on autopilot is configured:
 
 1. **Connect Gmail.** "Sign in with Google" grants two scopes: `gmail.compose` (send, save drafts) and `gmail.readonly`
    (read replies in threads the app started). The refresh token is stored encrypted (Fernet, key derived from `SECRET_KEY`).
@@ -269,6 +276,26 @@ service URL and add the same `/auth/google/callback` redirect URI to the OAuth c
 
 `data/` holds the settings, encrypted token, outreach log and stage files, so it must be on a persistent volume.
 With `WORKSPACE_ONLY=1` the install shows only your own campaign, not the bundled demo niches.
+
+Google Cloud (one always-on e2-micro VM, inside the free tier apart from the public IP, about US$3–4 a month):
+
+```bash
+gcloud auth login && gcloud config set project <your-project-id>   # project with billing enabled
+bash deploy/gcp.sh
+```
+
+The script creates the VM and firewall, copies the code and `.env` over SSH, and starts the app behind Caddy, which issues a
+Let's Encrypt certificate for `<ip>.sslip.io`. A VM rather than Cloud Run because the autopilot is a background loop and
+SQLite needs a disk that survives restarts. Re-run the script to deploy updates. Add the printed
+`https://…/auth/google/callback` to the OAuth client's redirect URIs.
+
+### n8n agent
+
+[`n8n/outreach_agent.sdk.js`](n8n/outreach_agent.sdk.js) is an n8n workflow: a hosted **n8n form** (brand, brief, region,
+number of test emails, report address) → `POST /api/live/run` on your server → checks `/api/live/status` every 30 s →
+fetches `/api/live/results` → emails an HTML report (shortlist, emails found, what was sent). It authenticates with the
+server's `API_TOKEN` through an `x-api-key` header (a Custom Auth credential in n8n:
+`{"headers":{"x-api-key":"<API_TOKEN>"}}`). Set the server URL in its **Server** node.
 
 ## Deliverables
 

@@ -9,9 +9,9 @@ from urllib.parse import parse_qs
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from . import autopilot, brand, gmail, llm, workspace
+from . import autopilot, brand, gmail, live, llm, workspace
 from .config import env
 from .sender import connect, now
 
@@ -36,6 +36,9 @@ button{{padding:10px 16px;font:600 15px/1 system-ui;background:#c62f26;color:#ff
 
 
 def _authed(request: Request) -> bool:
+    token, key = env("API_TOKEN"), request.headers.get("x-api-key", "")
+    if token and key and hmac.compare_digest(key.encode(), token.encode()):
+        return True  # machine access (n8n agent) with the install's API token
     pw = env("ADMIN_PASSWORD")
     if not pw:
         return True  # local development without a password
@@ -44,6 +47,14 @@ def _authed(request: Request) -> bool:
 
 class SettingsIn(BaseModel):
     values: dict
+
+
+class LiveIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    brief: str = Field(min_length=10, max_length=800)
+    region: str = Field("IN", pattern="^[A-Z]{2}$")
+    language: str = Field("en", pattern="^[a-z]{2}$")
+    send: int = Field(0, ge=0, le=10)  # test emails to send at the end (always to the owner's inbox)
 
 
 class BrandIn(BaseModel):
@@ -87,7 +98,7 @@ def install(app: FastAPI) -> None:
         pw = env("ADMIN_PASSWORD") or ""
         if not pw or not hmac.compare_digest(password.encode(), pw.encode()):
             return _page("Sign in", "<h1>Wrong password</h1><p><a href='/login'>Try again</a></p>", 401)
-        r = RedirectResponse("/control.html", status_code=303)
+        r = RedirectResponse("/live.html", status_code=303)
         r.set_cookie("session", workspace.sign("owner"), httponly=True, samesite="lax", max_age=30 * 86400,
                      secure=env("BASE_URL", "").startswith("https"))
         return r
@@ -168,6 +179,21 @@ def install(app: FastAPI) -> None:
         threading.Thread(target=autopilot.tick, kwargs={"force": True}, daemon=True).start()
         workspace.event("Run requested from the Control room")
         return {"started": True}
+
+    # --- live search: brief in, the whole pipeline runs now ----------------------------------------------------
+    @app.post("/api/live/run")
+    def live_run(body: LiveIn):
+        if not live.start(body.name.strip(), body.brief.strip(), body.region, body.language, body.send):
+            raise HTTPException(409, "a run is already in progress; wait for it to finish")
+        return live.state()
+
+    @app.get("/api/live/status")
+    def live_status():
+        return live.state()
+
+    @app.get("/api/live/results")
+    def live_results():
+        return live.results()
 
     @app.get("/api/events")
     def events(after: int = 0):

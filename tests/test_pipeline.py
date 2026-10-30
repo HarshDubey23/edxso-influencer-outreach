@@ -177,6 +177,31 @@ class EmailCompliance(unittest.TestCase):
         self.assertTrue(m["Subject"].startswith("[TEST -> c@x.com]"))
 
 
+class LiveSearch(unittest.TestCase):
+    """The live runner on a throwaway database: printed progress becomes events, failures end the run cleanly."""
+    setUp, tearDown = Workspace.setUp, Workspace.tearDown
+
+    def test_failure_is_reported_and_lock_released(self):
+        from outreach import autopilot, live, workspace
+        def boom(*a, **k):
+            print("planning queries")
+            raise SystemExit("YouTube quota exhausted")
+        with mock.patch.object(live.brand, "draft", side_effect=boom),              mock.patch.object(live.threading, "Thread", lambda target, args, daemon: mock.Mock(start=lambda: target(*args))):
+            self.assertTrue(live.start("Acme", "kettles for home baristas", send=1))
+        st = live.state()
+        self.assertEqual((st["status"], st["stage"]), ("error", "error"))
+        self.assertIn("quota", st["error"])
+        self.assertTrue(autopilot._lock.acquire(blocking=False))  # released, so the next run can start
+        autopilot._lock.release()
+        msgs = [e["message"] for e in workspace.events_after(0)]
+        self.assertIn("planning queries", msgs)  # a printed line reached the live feed
+
+    def test_second_run_refused_while_busy(self):
+        from outreach import autopilot, live
+        with autopilot._lock:
+            self.assertFalse(live.start("Acme", "kettles for home baristas"))
+
+
 class AutopilotGuards(unittest.TestCase):
     def test_send_next_respects_window_live_footer_and_review_gate(self):
         from outreach import autopilot

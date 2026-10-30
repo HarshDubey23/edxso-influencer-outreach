@@ -1,0 +1,21 @@
+# The app plus Caddy, which gets and renews a Let's Encrypt certificate for $DOMAIN automatically.
+# DOMAIN comes from deploy/.env (written by gcp.sh), e.g. 34-123-45-67.sslip.io.
+services:
+  app:
+    build: ..
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      BASE_URL: https://${DOMAIN}
+    volumes:
+      - data:/app/data
+  caddy:
+    image: caddy:2.10.2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    command: caddy reverse-proxy --from ${DOMAIN} --to app:8000
+    volumes:
+      - caddy:/data
+volumes:
+  data:
+  caddy:

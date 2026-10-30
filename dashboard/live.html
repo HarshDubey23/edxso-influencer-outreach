@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live Search · Outreach Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="control.css">
+  <link rel="stylesheet" href="live.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brandmark" href="live.html">Outreach Engine<small>live</small></a>
+      <nav class="tabs" aria-label="Pages">
+        <a class="navlink" href="live.html" aria-current="page">Live search</a>
+        <a class="navlink" href="control.html">Control room</a>
+        <a class="navlink" href="app.html#messages">Review messages</a>
+        <a class="navlink" href="app.html#tracker">Tracker</a>
+      </nav>
+      <span class="mode" id="gm-badge">checking Gmail…</span>
+    </div>
+  </header>
+
+  <main class="wrap live">
+    <h1>Find creators and reach out, now</h1>
+    <p class="lede">Describe your brand. The engine plans the searches, finds creators on YouTube right now, filters and scores them, finds published emails, writes a personal email and DM to each, and sends test emails from your Gmail. Every step shows up below as it happens.</p>
+
+    <form id="go" class="card search">
+      <label class="name">Brand<input name="name" required maxlength="80" placeholder="BrewNest" autocomplete="organization"></label>
+      <label class="brief">What you sell and who you want to reach<textarea name="brief" required minlength="10" maxlength="800" rows="2" placeholder="Pour-over coffee kits for people who brew at home in India; want home-barista and morning-routine creators"></textarea></label>
+      <div class="opts">
+        <label>Region<select name="region"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="AE">UAE</option><option value="SG">Singapore</option><option value="AU">Australia</option><option value="CA">Canada</option></select></label>
+        <label>Language<select name="language"><option value="en">English</option><option value="hi">Hindi</option></select></label>
+        <label>Test emails to send<select name="send"><option value="0">None, just find and write</option><option value="1">1</option><option value="3" selected>3</option><option value="5">5</option><option value="10">10</option></select></label>
+        <button class="btn go" type="submit" id="go-btn">Search and run</button>
+      </div>
+      <p class="small muted" id="go-msg">Test emails go to your own inbox with the creator's address in the subject. Nobody else is emailed.</p>
+    </form>
+
+    <ol class="stages" id="stages" aria-label="Progress">
+      <li data-s="planning">Plan<b id="k-queries">–</b><span>searches</span></li>
+      <li data-s="discovering">Discover<b id="k-discovered">–</b><span>channels</span></li>
+      <li data-s="filtering">Filter<b id="k-qualified">–</b><span>qualified</span></li>
+      <li data-s="enriching">Enrich<b id="k-emails">–</b><span>published emails</span></li>
+      <li data-s="writing">Write<b id="k-messages">–</b><span>messages</span></li>
+      <li data-s="sending">Send<b id="k-sent">–</b><span>test emails</span></li>
+    </ol>
+
+    <div class="split">
+      <section class="card">
+        <h2 class="sec">Creators <span class="small muted" id="camp"></span></h2>
+        <div class="filters"><button type="button" class="pill accent" data-f="qualified" aria-pressed="true">Shortlist</button><button type="button" class="pill" data-f="rejected" aria-pressed="false">Rejected, with reasons</button></div>
+        <div id="rows"><p class="empty">Results appear here as the search runs.</p></div>
+      </section>
+      <section class="card">
+        <h2 class="sec">Live feed</h2>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="live.js"></script>
+</body>
+</html>

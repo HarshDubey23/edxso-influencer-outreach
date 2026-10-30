@@ -7,6 +7,8 @@ import base64
 import hashlib
 import hmac
 import json
+import os
+import sys
 from contextlib import closing
 
 from cryptography.fernet import Fernet, InvalidToken
@@ -28,7 +30,7 @@ DEFAULTS = {
     "followup_days": 4,
     "postal_address": "",        # shown in every email footer; required before sending for real
     "sender_name": "",
-    "campaign_file": "campaigns/workspace.json",
+    "campaign_file": os.environ.get("CAMPAIGN_FILE", "campaigns/workspace.json"),  # containers keep it under data/
     "pipeline_every_hours": 24,
 }
 
@@ -100,7 +102,7 @@ def unsign(token: str) -> str | None:
 
 
 def event(message: str, level: str = "info") -> None:
-    print(f"[{level}] {message}")
+    print(f"[{level}] {message}", file=sys.__stdout__)  # the real console: live.py redirects stdout into events
     with closing(_db()) as db:
         db.execute("INSERT INTO events (at, level, message) VALUES (?, ?, ?)", (now(), level, message[:1000]))
         db.commit()
