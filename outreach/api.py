@@ -147,7 +147,8 @@ def edit_message(cid: str, channel_id: str, body: MessageEdit):
     issues = personalize.validate(m, rec, c)
     m.update(validation_issues=issues, email_words=personalize.words(m["email_body"]),
              dm_words=personalize.words(m["instagram_dm"]), edited_by_human=True,
-             review_status="approved" if body.approve and not issues else "needs_review")
+             review_status="approved" if body.approve and not issues else "needs_review",
+             human_approved=bool(body.approve and not issues))  # counts toward autopilot's review-first gate
     save_stage(c, "messages", msgs)
     return m
 
@@ -191,6 +192,11 @@ def model_web():
     if not path.exists():
         raise HTTPException(503, "model not trained yet: run `python -m outreach train`")
     return FileResponse(path, media_type="application/json")
+
+
+from .control import install as _install_control  # noqa: E402  (login, Gmail, settings, autopilot, live events)
+
+_install_control(app)
 
 
 @app.get("/")

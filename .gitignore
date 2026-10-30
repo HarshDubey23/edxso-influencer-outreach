@@ -5,3 +5,5 @@ data/outreach.db
 output/outbox/
 .impeccable/review/
 .impeccable/mocks/
+campaigns/workspace.json
+data/*-workspace/

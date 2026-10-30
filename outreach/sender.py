@@ -46,9 +46,11 @@ SENT_OK = ("simulated", "test_sent", "sent")
 
 
 def connect(path=None) -> sqlite3.Connection:
-    db = sqlite3.connect(path or DATA / "outreach.db")
+    db = sqlite3.connect(path or DATA / "outreach.db", timeout=30, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)
+    if "thread_id" not in {r["name"] for r in db.execute("PRAGMA table_info(outreach_log)")}:
+        db.execute("ALTER TABLE outreach_log ADD COLUMN thread_id TEXT")  # Gmail thread, for reading replies
     return db
 
 
@@ -76,13 +78,20 @@ def update(db, rowid: int, **fields) -> None:
     db.commit()
 
 
-def build_email(msg: dict, to: str, original_to: str, mode: str) -> EmailMessage:
+def build_email(msg: dict, to: str, original_to: str, mode: str, sender: str | None = None,
+                unsubscribe_url: str | None = None, postal: str = "") -> EmailMessage:
     m = EmailMessage()
-    m["From"] = env("SENDER_EMAIL", "partnerships@example.invalid")
+    m["From"] = sender or env("SENDER_EMAIL", "partnerships@example.invalid")
     m["To"] = to
     m["Subject"] = msg["email_subject"] if mode == "live" else f"[{mode.upper()} -> {original_to}] {msg['email_subject']}"
-    m["Message-ID"] = make_msgid(domain="edxso-outreach.local")
-    m.set_content(msg["email_body"])
+    m["Message-ID"] = make_msgid(domain="outreach.local")
+    body = msg["email_body"]
+    if unsubscribe_url:  # one-click opt-out in the body and the header mail clients show as "Unsubscribe"
+        m["List-Unsubscribe"] = f"<{unsubscribe_url}>"
+        m["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+        footer = "\n".join(filter(None, ["--", postal, f"Not the right fit? Stop all emails from us: {unsubscribe_url}"]))
+        body += "\n\n" + footer
+    m.set_content(body)
     return m
 
 
@@ -116,10 +125,10 @@ def eligible(messages: list[dict]) -> tuple[list[dict], list[tuple[dict, str]]]:
 
 
 def run(campaign: dict, messages: list[dict], enriched: list[dict], mode="dry-run", transport="smtp",
-        limit=None, confirm_live=False, db=None, outbox=None) -> dict:
+        limit=None, confirm_live=False, db=None, outbox=None, test_to=None) -> dict:
     if mode == "live" and not confirm_live:
         raise SystemExit("Refusing to email real creators without --confirm-live.")
-    test_to = env("TEST_RECIPIENT") if mode == "test" else None
+    test_to = (test_to or env("TEST_RECIPIENT")) if mode == "test" else None
     if mode == "test" and not test_to:
         raise SystemExit("Set TEST_RECIPIENT in .env for test mode.")
     db = db or connect()
@@ -168,11 +177,19 @@ def _deliver(db, cid, todo, mode, transport, kind, test_to, outbox) -> tuple[int
     outbox.mkdir(parents=True, exist_ok=True)
     done = "simulated" if mode == "dry-run" else "test_sent" if mode == "test" else "sent"
     emails, rowids, sent, failed = {}, {}, 0, 0
+    sender, postal, base = None, "", None
+    if transport == "gmail" and mode != "dry-run":
+        from . import workspace
+        addr = workspace.get("gmail_email")
+        name = workspace.get("sender_name")
+        sender, postal = (f"{name} <{addr}>" if name else addr), workspace.get("postal_address") or ""
+        base = env("BASE_URL", "http://localhost:8000").rstrip("/")
     # Write-ahead: a 'sending' row exists before anything leaves the machine. If the process dies mid-send,
     # that row (status != 'failed') blocks a resend on the next run instead of silently emailing twice.
     for m in todo:
         to = test_to or m["email"]
-        emails[m["channel_id"]] = em = build_email(m, to, m["email"], mode)
+        unsub = f"{base}/u/{workspace.sign(m['email'])}" if base else None
+        emails[m["channel_id"]] = em = build_email(m, to, m["email"], mode, sender, unsub, postal)
         rowids[m["channel_id"]] = log(db, campaign_id=cid, channel_id=m["channel_id"], influencer=m["influencer"],
                                       email=m["email"], kind=kind, mode=mode, status="sending",
                                       subject=em["Subject"], delivered_to=to,
@@ -199,6 +216,10 @@ def _deliver(db, cid, todo, mode, transport, kind, test_to, outbox) -> tuple[int
                 fields = (dict(status=done, provider_id=res.get("provider_id")) if res.get("status") == "sent"
                           else dict(status=res.get("status") if res.get("status") == "unconfirmed" else "failed",
                                     error=str(res.get("error", "n8n reported failure"))[:500]))
+            elif transport == "gmail":
+                from . import gmail
+                r = gmail.send(em, m.get("thread_id"))
+                fields = dict(status=done, provider_id=r["id"], thread_id=r["thread_id"])
             else:
                 fields = dict(status=done, provider_id=send_smtp(em))
         except Exception as e:  # one bad send must not abort the batch; it is logged and retryable
@@ -225,13 +246,11 @@ def write_followup(m: dict) -> str:
 
 
 def followups(campaign: dict, messages: list[dict], mode="dry-run", transport="smtp", days=4, limit=None,
-              db=None, outbox=None, writer=write_followup) -> dict:
+              db=None, outbox=None, writer=write_followup, test_to=None) -> dict:
     """Step 2 of the sequence: one follow-up after `days` with no reply, never to suppressed or replied creators."""
-    if mode == "live":
-        raise SystemExit("Live follow-ups are disabled in this prototype.")
     db = db or connect()
     cid = campaign["id"]
-    test_to = env("TEST_RECIPIENT") if mode == "test" else None
+    test_to = (test_to or env("TEST_RECIPIENT")) if mode == "test" else None
     cutoff = datetime.now(timezone.utc).timestamp() - days * 86400
     replied = {r["channel_id"] for r in db.execute("SELECT channel_id FROM replies WHERE campaign_id=?", (cid,))}
     blocked, by_id = suppressed(db), {m["channel_id"]: m for m in messages}
@@ -245,7 +264,7 @@ def followups(campaign: dict, messages: list[dict], mode="dry-run", transport="s
             skipped += 1
             continue
         try:
-            todo.append({**m, "email_subject": f"Re: {m['email_subject']}", "email_body": writer(m)})
+            todo.append({**m, "email_subject": f"Re: {m['email_subject']}", "email_body": writer(m), "thread_id": r["thread_id"]})
         except Exception as e:  # a failed draft skips this creator, never the batch
             print(f"  ! follow-up not drafted for {m['influencer']}: {e}")
     todo = todo[:limit] if limit else todo

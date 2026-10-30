@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control Room · Outreach Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="control.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brandmark" href="app.html">Outreach Engine<small>control room</small></a>
+      <nav class="tabs" aria-label="Pages">
+        <a class="navlink" href="control.html" aria-current="page">Control room</a>
+        <a class="navlink" href="app.html#messages">Review messages</a>
+        <a class="navlink" href="app.html#creators">Creators</a>
+        <a class="navlink" href="app.html#tracker">Tracker</a>
+      </nav>
+      <span class="mode" id="ap-badge">loading…</span>
+    </div>
+  </header>
+
+  <main class="wrap control">
+    <h1>Run your outreach</h1>
+    <p class="lede">Connect your mailbox, describe your brand, and switch on autopilot. It finds micro-influencers on YouTube, writes to each one from their own videos, sends within your limits, follows up, and sorts the replies.</p>
+
+    <ol class="steps-c">
+      <li class="card" id="s-connect">
+        <h2><span class="n">1</span> Connect</h2>
+        <div class="checks" id="checks"></div>
+        <div class="row" id="gmail-actions"></div>
+        <p class="muted small" id="gmail-help"></p>
+      </li>
+
+      <li class="card" id="s-brand">
+        <h2><span class="n">2</span> Your brand</h2>
+        <form id="brand-form" class="grid-form">
+          <label>Brand name<input name="name" required maxlength="80"></label>
+          <label>Website<input name="website" type="url" placeholder="https://"></label>
+          <label class="wide">What you do (one or two sentences)<textarea name="about" required rows="3" maxlength="800"></textarea></label>
+          <label class="wide">What creators get, one per line<textarea name="creator_value" rows="3" placeholder="paid collaboration&#10;free product&#10;affiliate commission"></textarea></label>
+          <label class="wide">Who you want to reach<input name="audience" placeholder="e.g. young professionals managing their first salary"></label>
+          <label>Region<select name="region"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="AE">UAE</option><option value="SG">Singapore</option><option value="AU">Australia</option><option value="CA">Canada</option></select></label>
+          <label>Language<select name="language"><option value="en">English</option><option value="hi">Hindi</option></select></label>
+          <div class="wide row"><button class="btn" type="submit" id="draft-btn">Draft the plan with AI</button><span class="small muted" id="draft-msg"></span></div>
+        </form>
+        <div id="plan" hidden>
+          <h3>Search plan <span class="muted small">(edit anything before saving)</span></h3>
+          <label class="block">YouTube search queries, one per line<textarea id="queries" rows="8"></textarea></label>
+          <div id="segments"></div>
+          <div class="row"><button class="btn" id="save-plan">Save campaign</button><span class="small muted" id="save-msg"></span></div>
+        </div>
+      </li>
+
+      <li class="card" id="s-auto">
+        <h2><span class="n">3</span> Autopilot</h2>
+        <form id="settings" class="grid-form">
+          <label class="switch wide"><input type="checkbox" name="autopilot"> <span><b>Autopilot on</b><br><span class="muted small">Runs every ~5 minutes: refreshes discovery daily, reads replies, sends at most one email per run.</span></span></label>
+          <label class="switch wide danger"><input type="checkbox" name="send_live"> <span><b>Send to creators for real</b><br><span class="muted small">Off: every email goes to your test inbox instead, with the creator's address in the subject.</span></span></label>
+          <label>Emails per day<input name="daily_cap" type="number" min="1" max="200"></label>
+          <label>Follow up after (days)<input name="followup_days" type="number" min="1" max="30"></label>
+          <label>Send from (hour)<input name="window_start" type="number" min="0" max="23"></label>
+          <label>Until (hour)<input name="window_end" type="number" min="1" max="24"></label>
+          <label>Time zone<select name="utc_offset_min"><option value="330">India (UTC+5:30)</option><option value="0">UTC / London winter</option><option value="60">Central Europe</option><option value="240">Dubai</option><option value="480">Singapore</option><option value="-300">New York</option><option value="-480">Los Angeles</option></select></label>
+          <label>Human-approve the first<input name="review_first" type="number" min="0" max="500"></label>
+          <label>Sign-off name<input name="sender_name" maxlength="80" placeholder="Priya, Partnerships at Acme"></label>
+          <label>Test inbox<input name="test_recipient" type="email" placeholder="defaults to your Gmail"></label>
+          <label class="wide">Postal address for the footer (required to send for real)<input name="postal_address" maxlength="300"></label>
+          <div class="wide row"><button class="btn" type="submit">Save settings</button><button class="btn ghost" type="button" id="run-now">Run now</button><span class="small muted" id="set-msg"></span></div>
+        </form>
+      </li>
+
+      <li class="card" id="s-live">
+        <h2><span class="n">4</span> Live activity</h2>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </li>
+    </ol>
+  </main>
+  <dialog id="confirm-live"><div class="dlg">
+    <h2 style="margin-top:0">Send to real creators?</h2>
+    <p>Autopilot will email creators directly from <b id="cl-email"></b>, up to <b id="cl-cap"></b> a day, each with your footer and an unsubscribe link. Messages that failed checks are never sent automatically.</p>
+    <p>Type <b>SEND</b> to confirm.</p><input id="cl-word" class="field" autocomplete="off">
+    <div class="row" style="margin-top:12px"><button class="btn" id="cl-yes">Turn on live sending</button><button class="btn ghost" id="cl-no">Cancel</button></div>
+  </div></dialog>
+  <script type="module" src="control.js"></script>
+</body>
+</html>

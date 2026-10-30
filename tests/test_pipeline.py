@@ -1,4 +1,5 @@
 """Run: python -m unittest discover -s tests -v   (no network, no API keys needed)"""
+import json
 import os
 import tempfile
 import unittest
@@ -119,6 +120,105 @@ class HybridClassifier(unittest.TestCase):
         self.assertEqual(ml.decide({}), "other")
 
 
+class Workspace(unittest.TestCase):
+    """Settings, secrets and signed links live in SQLite; these tests run on a throwaway database."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        from outreach import workspace
+        path, real = Path(self.tmp.name) / "w.db", sender.connect
+        self.patch = mock.patch.object(workspace, "connect", lambda p=None: real(path))  # workspace binds connect by name
+        self.patch.start()
+        os.environ["SECRET_KEY"] = "test-secret"
+
+    def tearDown(self):
+        self.patch.stop()
+        self.tmp.cleanup()
+
+    def test_secret_roundtrip_and_wrong_key(self):
+        from outreach import workspace
+        workspace.put_secret("gmail_refresh", "1//refresh-token")
+        self.assertEqual(workspace.get_secret("gmail_refresh"), "1//refresh-token")
+        self.assertNotIn("refresh-token", json.dumps(workspace.get("secret:gmail_refresh")))  # stored encrypted
+        os.environ["SECRET_KEY"] = "another-key"
+        self.assertIsNone(workspace.get_secret("gmail_refresh"))  # key changed: reconnect, never crash
+        self.assertNotIn("secret:gmail_refresh", workspace.all_settings())
+
+    def test_signed_tokens_reject_tampering(self):
+        from outreach import workspace
+        t = workspace.sign("creator@example.com")
+        self.assertEqual(workspace.unsign(t), "creator@example.com")
+        raw, mac = t.split(".")
+        self.assertIsNone(workspace.unsign(raw[:-1] + ("A" if raw[-1] != "A" else "B") + "." + mac))
+        self.assertIsNone(workspace.unsign("garbage"))
+
+    def test_settings_defaults_and_events(self):
+        from outreach import workspace
+        self.assertFalse(workspace.get("send_live"))
+        workspace.put(daily_cap=5)
+        self.assertEqual(workspace.all_settings()["daily_cap"], 5)
+        workspace.event("hello")
+        self.assertEqual([e["message"] for e in workspace.events_after(0)], ["hello"])
+
+
+class EmailCompliance(unittest.TestCase):
+    def test_unsubscribe_header_and_footer(self):
+        m = sender.build_email({"email_subject": "Hi", "email_body": "Body text"}, "c@x.com", "c@x.com", "live",
+                               "Brand <me@x.com>", "https://app.example/u/tok", "12 Road, Delhi")
+        self.assertEqual(m["List-Unsubscribe"], "<https://app.example/u/tok>")
+        self.assertEqual(m["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click")
+        body = m.get_content()
+        self.assertIn("12 Road, Delhi", body)
+        self.assertIn("https://app.example/u/tok", body)
+        self.assertEqual(m["From"], "Brand <me@x.com>")
+
+    def test_test_mode_marks_subject(self):
+        m = sender.build_email({"email_subject": "Hi", "email_body": "B"}, "me@x.com", "c@x.com", "test")
+        self.assertTrue(m["Subject"].startswith("[TEST -> c@x.com]"))
+
+
+class AutopilotGuards(unittest.TestCase):
+    def test_send_next_respects_window_live_footer_and_review_gate(self):
+        from outreach import autopilot
+        base = {"send_live": False, "postal_address": "", "window_start": 0, "window_end": 24, "utc_offset_min": 0,
+                "daily_cap": 5, "review_first": 2, "followup_days": 4, "gmail_email": "me@x.com"}
+        self.assertIn("postal address", autopilot.send_next(CAMPAIGN, {**base, "send_live": True}))
+        hour = autopilot._local_now(base).hour
+        self.assertIn("outside the sending window", autopilot.send_next(CAMPAIGN, {**base, "window_start": (hour + 1) % 24, "window_end": (hour + 1) % 24 + 1}))
+        calls = {}
+        with mock.patch.object(autopilot, "sent_today", return_value=0), \
+             mock.patch.object(autopilot, "_stage", side_effect=lambda c, n: [{"channel_id": "A", "human_approved": False}, {"channel_id": "B", "human_approved": True}] if n == "messages" else []), \
+             mock.patch.object(autopilot.sender, "run", side_effect=lambda c, pool, *a, **k: calls.setdefault("pool", pool) and {"sent": 1, "failed": 0}), \
+             mock.patch.object(autopilot.sender, "connect") as conn:
+            conn.return_value.execute.return_value.fetchone.return_value = [0]  # nothing sent yet: review gate applies
+            autopilot.send_next(CAMPAIGN, base)
+        self.assertEqual([m["channel_id"] for m in calls["pool"]], ["B"])  # only the human-approved message
+
+    def test_daily_cap(self):
+        from outreach import autopilot
+        s = {"send_live": False, "window_start": 0, "window_end": 24, "utc_offset_min": 0, "daily_cap": 3}
+        with mock.patch.object(autopilot, "sent_today", return_value=3):
+            self.assertIn("daily cap", autopilot.send_next(CAMPAIGN, s))
+
+    def test_poll_replies_skips_own_mail_and_bounces(self):
+        from outreach import autopilot
+        thread = [{"id": "1", "from": "Me <me@x.com>", "text": "hi"},
+                  {"id": "2", "from": "Mail Delivery Subsystem <mailer-daemon@googlemail.com>", "text": "Message blocked"},
+                  {"id": "3", "from": "Creator <c@y.com>", "text": "What's the budget?", "subject": "Re: hi", "message_id": "<m3>"}]
+        triaged = []
+        with mock.patch.object(autopilot.gmail, "thread", return_value=thread), \
+             mock.patch.object(autopilot, "_stage", return_value=[]), \
+             mock.patch.object(autopilot.sender, "connect") as conn, \
+             mock.patch.object(autopilot.workspace, "get", return_value=[]), \
+             mock.patch.object(autopilot.workspace, "put"), mock.patch.object(autopilot.workspace, "event"), \
+             mock.patch.object(autopilot.replies, "classify", side_effect=lambda t, *a: triaged.append(t) or
+                               {"intent": "rate_negotiation", "suppress": False, "suggested_reply": ""}), \
+             mock.patch.object(autopilot.replies, "record"):
+            conn.return_value.execute.return_value.fetchall.return_value = [{"channel_id": "A", "email": "c@y.com", "thread_id": "t"}]
+            self.assertEqual(autopilot.poll_replies(CAMPAIGN, {"gmail_email": "me@x.com"}), 1)
+        self.assertEqual(triaged, ["What's the budget?"])  # only the creator's message reaches the classifier
+
+
 class PublicSite(unittest.TestCase):
     def test_email_masking(self):
         from outreach.export import _mask
@@ -132,6 +232,7 @@ class Enrichment(unittest.TestCase):
     def test_email_extraction(self):
         text = "Biz: Priya.T@gmail.com, also priya [at] priyateaches [dot] in. logo@2x.png you@example.com PRIYA.T@GMAIL.COM"
         self.assertEqual(extract_emails(text), ["priya.t@gmail.com", "priya@priyateaches.in"])
+        self.assertEqual(extract_emails("Email:-creator.biz@gmail.com"), ["creator.biz@gmail.com"])
 
     def test_no_email_is_not_guessed(self):
         self.assertEqual(extract_emails("Contact me on Instagram"), [])

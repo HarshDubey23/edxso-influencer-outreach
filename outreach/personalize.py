@@ -146,13 +146,19 @@ def personalize(rec: dict, campaign: dict, sender: str, attempts: int = 3, avoid
             "model": env("GEMINI_MODEL", "gemini-3.5-flash-lite")}
 
 
-def run(campaign: dict, enriched: list[dict], limit: int | None = None) -> list[dict]:
+def run(campaign: dict, enriched: list[dict], limit: int | None = None, keep: list[dict] | None = None,
+        sender_name: str | None = None) -> list[dict]:
+    """keep: existing messages to preserve as-is (human edits/approvals survive scheduled re-runs); only new creators are written."""
     if not llm.available():
         raise SystemExit("GEMINI_API_KEY is not set: personalization needs an LLM (see README).")
-    sender = env("SENDER_NAME", "Partnerships Team, EDXSO")
-    targets = enriched[:limit] if limit else enriched
+    sender = sender_name or env("SENDER_NAME", f"Partnerships Team, {campaign['brand']['name']}")
+    kept = {m["channel_id"]: m for m in (keep or []) if m.get("review_status") != "generation_failed"}
+    targets = [r for r in enriched if r["channel_id"] not in kept]
+    targets = targets[:limit] if limit else targets
     print(f"Personalization: generating messages for {len(targets)} creators with {env('GEMINI_MODEL', 'gemini-2.5-flash')}")
-    out, avoid, angles = [], [], Counter()
+    out = list(kept.values())
+    avoid = [p for m in out if m.get("review_status") == "approved" for p in used_phrasings(m)]
+    angles = Counter(m.get("collaboration_angle") for m in out if m.get("review_status") == "approved")
     for i, rec in enumerate(targets, 1):
         try:
             m = personalize(rec, campaign, sender, avoid=avoid[-12:], angles_used=dict(angles))

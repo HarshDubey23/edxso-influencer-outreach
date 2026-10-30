@@ -33,6 +33,7 @@ async function boot() {
   try { WEB = await (await fetch(LIVE ? "/api/model-web" : "niche_classifier_web.json")).json(); } catch { WEB = null; }
   $("#mode").textContent = LIVE ? "live · local API" : "public demo · read-only";
   $("#mode").classList.toggle("live", LIVE);
+  $("#ctl").hidden = !LIVE;  // the control room needs the local API; the public demo is read-only
   $("#generated").textContent = `Data generated ${new Date(D.generated_at).toLocaleString()}.`;
   const sections = { overview: renderOverview, creators: renderCreators, messages: renderMessages, match: renderMatch,
                      ask: renderAsk, model: renderModel, replies: renderReplies, tracker: renderTracker };

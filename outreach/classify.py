@@ -64,8 +64,8 @@ def classify(rec: dict, campaign: dict, ctx: dict | None = None) -> dict:
 
     from . import ml  # lazy: ml imports this module
     pred = ml.predict(rec) if rec["recent_videos"] else {"ml_niche": None, "ml_confidence": None, "ml_probs": {}}
-    if pred["ml_probs"]:
-        own = pred["ml_probs"].get(campaign["niche"], 0.0)
+    if campaign["niche"] in pred["ml_probs"]:  # the model only judges niches it was trained on
+        own = pred["ml_probs"][campaign["niche"]]
         check("ml_niche_agreement", own >= f["min_ml_confidence"],
               f"classifier: {campaign['niche']} {own:.2f}" if own >= f["min_ml_confidence"] else
               f"classifier says {pred['ml_niche']} ({pred['ml_confidence']:.2f}), {campaign['niche']} only {own:.2f}")
@@ -94,7 +94,7 @@ def classify(rec: dict, campaign: dict, ctx: dict | None = None) -> dict:
     # Fit score (0-100) ranks the shortlist; it never overrides a failed hard check.
     fit = 0.0
     if qualified:
-        fit = (25 * min(rel / 10, 1) + 15 * (pred["ml_probs"].get(campaign["niche"], 0.5) if pred["ml_probs"] else 0.5)
+        fit = (25 * min(rel / 10, 1) + 15 * pred["ml_probs"].get(campaign["niche"], 0.5)
                + 20 * min((er or 0) / 6, 1) + 10 * min((rec["views_to_followers"] or 0) / 40, 1)
                + 10 * (auth["authenticity"] or 50) / 100 + 10 * segments[seg]["fit_weight"] + 10 * geo_pref)
 

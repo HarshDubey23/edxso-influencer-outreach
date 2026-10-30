@@ -9,6 +9,7 @@ schedules **follow-ups**.
 
 **Live demo:** https://edxso-outreach-engine.vercel.app: the results page (merit list, how each result was decided, a live classifier you can type into). The full dashboard is at [/app.html](https://edxso-outreach-engine.vercel.app/app.html). Both are read-only with emails masked.
 **Run it locally:** `uvicorn outreach.api:app` → http://localhost:8000 (full interactive mode)
+**Run it for your own brand:** self-host it, sign in with Google, write a brand brief, and the autopilot handles discovery to replies. See [Self-hosted autopilot](#self-hosted-autopilot-run-it-for-your-own-brand).
 
 ![Overview](docs/screenshots/overview.png)
 
@@ -207,6 +208,67 @@ uvicorn outreach.api:app                       # API + dashboard on http://local
 ```
 
 **New niche or brand:** add `campaigns/<name>.json` (queries, segments with keywords and angle hints, brand brief, optional overrides). The code doesn't change.
+
+## Self-hosted autopilot (run it for your own brand)
+
+The same engine, packaged so any brand can run outreach from its own Gmail without touching the CLI.
+The **Control room** (`/control.html`, behind a password) is where it is driven:
+
+1. **Connect Gmail.** "Sign in with Google" grants two scopes: `gmail.compose` (send, save drafts) and `gmail.readonly`
+   (read replies in threads the app started). The refresh token is stored encrypted (Fernet, key derived from `SECRET_KEY`).
+   No app password is involved.
+2. **Write a brand brief** in plain English. Gemini turns it into a campaign (niche, search queries, audience segments),
+   which you can edit before saving.
+3. **Turn on the autopilot.** Every ~5 minutes (with jitter) it:
+   - refreshes the pipeline once a day (discover → filter → enrich → write), keeping messages already written;
+   - reads replies in its own threads, classifies intent, honours opt-outs, and saves a suggested answer as a **Gmail draft**
+     (it never replies on its own; bounce notices are logged, not triaged);
+   - sends **at most one** email or follow-up per tick.
+
+**Guardrails** (all editable in the Control room):
+
+| Guardrail | Default |
+|---|---|
+| Live sending | **off**: every email is redirected to your own inbox with a `[TEST -> creator]` subject |
+| Live sending requires | a postal address in the footer (CAN-SPAM) and a typed confirmation |
+| Daily cap | 20 emails |
+| Sending window | 10:00–18:00 in your time zone |
+| Human review | the first 10 emails go out only after you approve them in the dashboard |
+| Opt-out | `List-Unsubscribe` header + one-click link in every email; opted-out addresses are never contacted again |
+| Duplicates | write-ahead log: one email per creator and inbox, never resent after a crash |
+
+Everything was verified against real Gmail: OAuth connect, send, unsubscribe link, reply read-back, triage and draft.
+
+### Google OAuth client (one time, ~5 minutes)
+
+1. [Google Cloud Console](https://console.cloud.google.com) → new project → **APIs & Services → Library** → enable **Gmail API**.
+2. **OAuth consent screen** → External → add the two scopes above → add your Gmail address under **Test users**
+   (in "Testing" mode only listed users can sign in; publish the app to lift that).
+3. **Credentials → Create OAuth client ID → Web application** → authorised redirect URI:
+   `<BASE_URL>/auth/google/callback` (locally `http://localhost:8000/auth/google/callback`).
+4. Put the client ID and secret in `.env` as `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
+
+### Run it
+
+Locally:
+
+```bash
+cp .env.example .env    # YOUTUBE_API_KEY, GEMINI_API_KEY, SECRET_KEY, ADMIN_PASSWORD, GOOGLE_CLIENT_ID/SECRET, WORKSPACE_ONLY=1
+uvicorn outreach.api:app
+```
+
+Docker:
+
+```bash
+docker build -t outreach-engine .
+docker run -p 8000:8000 --env-file .env -v outreach-data:/app/data outreach-engine
+```
+
+Render: `render.yaml` is a one-click blueprint (Docker web service + 1 GB disk for `data/`). Set `BASE_URL` to the
+service URL and add the same `/auth/google/callback` redirect URI to the OAuth client.
+
+`data/` holds the settings, encrypted token, outreach log and stage files, so it must be on a persistent volume.
+With `WORKSPACE_ONLY=1` the install shows only your own campaign, not the bundled demo niches.
 
 ## Deliverables
 

@@ -1,0 +1,32 @@
+# One-click deploy: https://render.com/deploy?repo=https://github.com/HarshDubey23/edxso-influencer-outreach
+# The persistent disk keeps settings, the encrypted Gmail token and the outreach log across restarts
+# (Render disks need the Starter plan; without a disk everything resets on each deploy).
+services:
+  - type: web
+    name: outreach-engine
+    runtime: docker
+    plan: starter
+    healthCheckPath: /healthz
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: BASE_URL
+        sync: false          # e.g. https://outreach-engine.onrender.com
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: WORKSPACE_ONLY
+        value: "1"

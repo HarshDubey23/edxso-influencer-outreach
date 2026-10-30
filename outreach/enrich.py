@@ -43,7 +43,7 @@ def extract_emails(text: str) -> list[str]:
     t = re.sub(r"\s*[\[(]\s*dot\s*[\])]\s*", ".", t, flags=re.I)
     out = []
     for m in EMAIL_RE.findall(t):
-        e = m.strip(".").lower()
+        e = m.strip(".-_").lower()  # "Email:-name@x.com" must not keep the hyphen
         if e.endswith((".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg")) or any(p in e for p in IGNORED_EMAIL_PARTS):
             continue
         if VALID_EMAIL.match(e) and e not in out:
