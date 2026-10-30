@@ -213,6 +213,16 @@ class Postgres(unittest.TestCase):
         self.assertEqual((r["b"], r[0], dict(r)), (2, 1, {"a": 1, "b": 2}))
 
 
+class Access(unittest.TestCase):
+    def test_public_install_without_password_is_locked(self):
+        from outreach import control
+        req = mock.Mock(headers={}, cookies={})
+        with mock.patch.dict(os.environ, {"ADMIN_PASSWORD": "", "API_TOKEN": "", "BASE_URL": "https://x.onrender.com"}):
+            self.assertFalse(control._authed(req))
+        with mock.patch.dict(os.environ, {"ADMIN_PASSWORD": "", "API_TOKEN": "", "BASE_URL": "http://localhost:8000"}):
+            self.assertTrue(control._authed(req))
+
+
 class AutopilotGuards(unittest.TestCase):
     def test_send_next_respects_window_live_footer_and_review_gate(self):
         from outreach import autopilot

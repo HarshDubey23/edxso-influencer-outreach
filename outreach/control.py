@@ -40,8 +40,8 @@ def _authed(request: Request) -> bool:
     if token and key and hmac.compare_digest(key.encode(), token.encode()):
         return True  # machine access (n8n agent) with the install's API token
     pw = env("ADMIN_PASSWORD")
-    if not pw:
-        return True  # local development without a password
+    if not pw:  # no password: open only for local development, locked on a public (https) install
+        return not env("BASE_URL", "").startswith("https")
     return workspace.unsign(request.cookies.get("session", "")) == "owner"
 
 
