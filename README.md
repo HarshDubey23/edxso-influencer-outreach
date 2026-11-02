@@ -7,7 +7,7 @@ plain-English **brand brief** using embeddings, writes a personalised email and 
 doubtful for **human review**, sends through **n8n + Gmail** with crash-safe duplicate protection, **triages replies**, and
 schedules **follow-ups**.
 
-**Live demo:** https://edxso-outreach-engine.vercel.app: the results page (merit list, how each result was decided, a live classifier you can type into). The full dashboard is at [/app.html](https://edxso-outreach-engine.vercel.app/app.html). Both are read-only with emails masked.
+**Live demo:** https://edxso-outreach-engine.onrender.com: the results page (merit list, how each result was decided, a live classifier you can type into). The full dashboard is at [/app.html](https://edxso-outreach-engine.onrender.com/app.html). Both are read-only with emails masked.
 **Run it locally:** `uvicorn outreach.api:app` → http://localhost:8000 (full interactive mode)
 **Run it for your own brand:** self-host it, sign in with Google, write a brand brief, and the autopilot handles discovery to replies. See [Self-hosted autopilot](#self-hosted-autopilot-run-it-for-your-own-brand).
 
@@ -183,7 +183,7 @@ Failures go back to the model with the exact violations, for up to 3 attempts. A
 
 The dashboard runs in two modes:
 - **Live** (local API): edit and approve messages, send, ask, match and triage.
-- **Public** (static, on Vercel): everything is precomputed and emails are masked. The classifier still runs live in the browser.
+- **Public** (static, on Render): everything is precomputed and emails are masked. The classifier still runs live in the browser.
 
 ## Setup
 
